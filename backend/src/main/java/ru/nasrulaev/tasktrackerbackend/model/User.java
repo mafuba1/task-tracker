@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import ru.nasrulaev.tasktrackerbackend.security.Password;
 
 @Entity
 @Table(name = "Users")
@@ -23,6 +24,7 @@ public class User {
 
     @Column
     @NotBlank
+    @Password
     private String password;
 
     public User() {
