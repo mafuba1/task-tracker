@@ -4,7 +4,9 @@ package ru.nasrulaev.tasktrackerbackend.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.ColumnDefault;
 import ru.nasrulaev.tasktrackerbackend.security.Password;
 
 @Entity
@@ -26,6 +28,10 @@ public class User {
     @NotBlank
     @Password
     private String password;
+
+    @NotNull
+    @ColumnDefault("false")
+    private boolean isSubscribed;
 
     public User() {
     }
