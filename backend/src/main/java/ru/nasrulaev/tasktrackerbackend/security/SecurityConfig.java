@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.nasrulaev.tasktrackerbackend.service.PersonDetailsService;
 
 @Configuration
@@ -19,10 +20,12 @@ import ru.nasrulaev.tasktrackerbackend.service.PersonDetailsService;
 public class SecurityConfig {
 
     private final PersonDetailsService personDetailsService;
+    private final JwtFilter jwtFilter;
 
     @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService) {
+    public SecurityConfig(PersonDetailsService personDetailsService, JwtFilter jwtFilter) {
         this.personDetailsService = personDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -49,7 +52,9 @@ public class SecurityConfig {
                                 .loginProcessingUrl("/auth/login")
                 )
                 .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         ;
+
         return http.build();
     }
 
@@ -58,7 +63,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // TODO: implement JWT
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider  provider = new DaoAuthenticationProvider();
