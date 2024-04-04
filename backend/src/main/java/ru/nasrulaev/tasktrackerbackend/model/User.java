@@ -19,13 +19,13 @@ public class User {
     private long id;
 
     @Column(unique = true)
-    @NotBlank
+    @NotBlank(message = "Email is mandatory")
     @Email
     @Size(max = 320)
     private String email;
 
     @Column
-    @NotBlank
+    @NotBlank(message = "Email is mandatory")
     @Password
     private String password;
 
