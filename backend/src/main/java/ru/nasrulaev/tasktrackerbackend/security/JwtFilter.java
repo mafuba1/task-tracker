@@ -1,9 +1,11 @@
 package ru.nasrulaev.tasktrackerbackend.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,18 +31,31 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            @NotNull HttpServletRequest request,
+            @NotNull HttpServletResponse response,
+            @NotNull FilterChain filterChain
+    ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String username;
+        String username = null;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            logger.warn("JWT Token is empty or does not begin with Bearer String");
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
+
+        try {
+            username = jwtService.extractUsername(jwt);
+        } catch (ExpiredJwtException e) {
+            logger.error("JWT Token has expired");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+
         if (username != null && !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             UserDetails userDetails = personDetailsService.loadUserByUsername(username);
 
@@ -51,9 +66,9 @@ public class JwtFilter extends OncePerRequestFilter {
                                 userDetails.getPassword(),
                                 userDetails.getAuthorities()
                         );
+
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
-
             }
         }
 

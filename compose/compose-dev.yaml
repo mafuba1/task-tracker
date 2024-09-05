@@ -10,6 +10,12 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_PROFILES_ACTIVE: dev
 
+  frontend:
+    build: ../frontend
+    ports:
+      - 8089:80
+    restart: always
+
   db:
     image: 'postgres:16-alpine'
     restart: always

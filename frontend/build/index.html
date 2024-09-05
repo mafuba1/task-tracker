@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Page App</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        .task-list {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Задачник</h1>
+    <div id="user-info" class="mb-3">
+        <!-- Здесь отображается либо форма входа/регистрации, либо информация о пользователе -->
+        <div id="auth-buttons">
+            <button id="register-btn" class="btn btn-primary">Регистрация</button>
+            <button id="login-btn" class="btn btn-secondary">Авторизация</button>
+        </div>
+    </div>
+
+    <div id="task-manager" style="display: none;">
+        <div class="mb-3">
+            <input type="text" id="task-title" class="form-control" placeholder="Название задачи">
+            <button id="add-task-btn" class="btn btn-success mt-2">Добавить</button>
+        </div>
+        <div id="tasks">
+            <h3>Несделанные задачи</h3>
+            <ul id="pending-tasks" class="task-list"></ul>
+            <h3>Сделанные задачи</h3>
+            <ul id="completed-tasks" class="task-list"></ul>
+        </div>
+        <button id="logout-btn" class="btn btn-danger mt-3">Выйти</button>
+    </div>
+</div>
+
+<!-- Модальные окна -->
+<div class="modal" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="authModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="auth-form">
+                    <div class="mb-3">
+                        <label for="auth-email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="auth-email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="auth-password" class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="auth-password" required>
+                    </div>
+                    <div id="repeat-password-field" class="mb-3" style="display: none;">
+                        <label for="auth-repeat-password" class="form-label">Повторите пароль</label>
+                        <input type="password" class="form-control" id="auth-repeat-password">
+                    </div>
+                    <div id="auth-error" class="alert alert-danger" style="display: none;"></div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
