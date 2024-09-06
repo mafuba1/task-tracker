@@ -9,6 +9,8 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 import ru.nasrulaev.tasktrackerbackend.security.Password;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Users")
 public class User {
@@ -32,6 +34,9 @@ public class User {
     @NotNull
     @ColumnDefault("false")
     private boolean isSubscribed;
+
+    @OneToMany(mappedBy = "owner", orphanRemoval = true)
+    private List<Task> tasks;
 
     public User() {
     }
@@ -69,5 +74,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isSubscribed() {
+        return isSubscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        isSubscribed = subscribed;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }
