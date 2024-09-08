@@ -1,4 +1,6 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
-public record ErrorDTO(String message){
+import java.sql.Timestamp;
+
+public record ErrorDTO(String message, Timestamp timestamp){
 }

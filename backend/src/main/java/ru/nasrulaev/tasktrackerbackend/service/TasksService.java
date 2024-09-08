@@ -1,9 +1,9 @@
 package ru.nasrulaev.tasktrackerbackend.service;
 
-import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.nasrulaev.tasktrackerbackend.exception.TaskNotFoundException;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.repository.TasksRepository;
@@ -23,10 +23,13 @@ public class TasksService {
         this.tasksRepository = tasksRepository;
     }
 
-    public Task findOne(long id) {
+    private Task findOne(long id) {
         return tasksRepository
                 .findById(id)
-                .orElse(null);
+                .orElseThrow(
+                        () ->
+                                new TaskNotFoundException("Task with id '" + id + "' not found")
+                );
     }
 
     public List<Task> findTasksByOwner(User owner) {
@@ -43,17 +46,33 @@ public class TasksService {
     }
 
     @Transactional
-    public void markDone(@Nonnull Task task) {
-        task.setDone_timestamp(
+    public void update(long id, Task updatedTask) {
+        findOne(id);
+        updatedTask.setId(id);
+        tasksRepository.save(updatedTask);
+    }
+
+    @Transactional
+    public void markDone(long id) {
+        Task taskToBeDone = findOne(id);
+        taskToBeDone.setDone_timestamp(
                 new Timestamp(
                         System.currentTimeMillis()
                 )
         );
-        tasksRepository.save(task);
+        tasksRepository.save(taskToBeDone);
+    }
+
+    @Transactional
+    public void unmarkDone(long id) {
+        Task taskToUnmark = findOne(id);
+        taskToUnmark.setDone_timestamp(null);
+        tasksRepository.save(taskToUnmark);
     }
 
     @Transactional
     public void deleteById(long id) {
+        findOne(id);
         tasksRepository.deleteById(id);
     }
 
