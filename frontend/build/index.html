@@ -26,17 +26,34 @@
         </div>
     </div>
 
-    <div id="task-manager" style="display: none;">
-        <div class="mb-3">
-            <input type="text" id="task-title" class="form-control" placeholder="Название задачи">
-            <button id="add-task-btn" class="btn btn-success mt-2">Добавить</button>
+    <div id="task-manager" style="display: none">
+        <!-- Task Creation Form -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <form id="createTaskForm">
+                    <div class="form-group">
+                        <label for="taskHeader">Task Header</label>
+                        <input type="text" id="taskHeader" class="form-control" placeholder="Enter task header" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">Description</label>
+                        <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDeadline">Deadline (Optional)</label>
+                        <input type="datetime-local" id="taskDeadline" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                </form>
+            </div>
         </div>
-        <div id="tasks">
-            <h3>Несделанные задачи</h3>
-            <ul id="pending-tasks" class="task-list"></ul>
-            <h3>Сделанные задачи</h3>
-            <ul id="completed-tasks" class="task-list"></ul>
-        </div>
+
+        <!-- Task Lists -->
+        <h3 class="mt-5">Tasks</h3>
+        <ul id="taskList" class="list-group task-list mt-3">
+            <!-- Tasks will be populated here -->
+        </ul>
+
         <button id="logout-btn" class="btn btn-danger mt-3">Выйти</button>
     </div>
 </div>
