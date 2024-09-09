@@ -41,8 +41,8 @@ public class TasksService {
     }
 
     @Transactional
-    public void save(Task task) {
-        tasksRepository.save(task);
+    public Task save(Task task) {
+        return tasksRepository.save(task);
     }
 
     @Transactional

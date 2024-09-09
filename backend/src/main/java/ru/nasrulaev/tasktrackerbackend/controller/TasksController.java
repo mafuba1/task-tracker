@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.nasrulaev.tasktrackerbackend.dto.CreateTaskRequest;
 import ru.nasrulaev.tasktrackerbackend.dto.TaskDTO;
 import ru.nasrulaev.tasktrackerbackend.dto.TaskList;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
@@ -41,15 +42,15 @@ public class TasksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDTO createTask(@RequestBody @Valid TaskDTO createRequest) {
-        tasksService.save(
+    public TaskDTO createTask(@RequestBody @Valid CreateTaskRequest createRequest) {
+         Task newTask = tasksService.save(
                 modelMapper.map(
                         createRequest,
                         Task.class
                 )
         );
 
-        return createRequest;
+        return convertTaskToDTO(newTask);
     }
 
     @PutMapping("/{id}")

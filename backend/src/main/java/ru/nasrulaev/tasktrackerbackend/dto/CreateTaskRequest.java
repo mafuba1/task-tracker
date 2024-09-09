@@ -1,15 +1,11 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.PastOrPresent;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class TaskDTO {
-
-    private long id;
-
+public class CreateTaskRequest {
     @NotEmpty(message = "Header must not be empty")
     private String header;
 
@@ -17,26 +13,13 @@ public class TaskDTO {
 
     private Timestamp deadline_timestamp;
 
-    @PastOrPresent
-    private Timestamp done_timestamp;
-
-    public TaskDTO() {
+    public CreateTaskRequest() {
     }
 
-    public TaskDTO(long id, String header, String description, Timestamp deadline_timestamp, Timestamp done_timestamp) {
-        this.id = id;
+    public CreateTaskRequest(String header, String description, Timestamp deadline_timestamp) {
         this.header = header;
         this.description = description;
         this.deadline_timestamp = deadline_timestamp;
-        this.done_timestamp = done_timestamp;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getHeader() {
@@ -62,13 +45,5 @@ public class TaskDTO {
 
     public void setDeadline_timestamp(Timestamp deadline_timestamp) {
         this.deadline_timestamp = deadline_timestamp;
-    }
-
-    public Date getDone_timestamp() {
-        return done_timestamp;
-    }
-
-    public void setDone_timestamp(Timestamp done_timestamp) {
-        this.done_timestamp = done_timestamp;
     }
 }
