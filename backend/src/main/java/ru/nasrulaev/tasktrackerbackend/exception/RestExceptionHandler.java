@@ -1,6 +1,8 @@
 package ru.nasrulaev.tasktrackerbackend.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +25,24 @@ public class RestExceptionHandler {
     @ExceptionHandler(TaskNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorDTO taskNotFound(TaskNotFoundException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(EmailTakenException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO emailTaken(EmailTakenException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO emailNotFound(UsernameNotFoundException e) {
         return new ErrorDTO(
                 e.getMessage(),
                 new Timestamp(System.currentTimeMillis())
