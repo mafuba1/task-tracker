@@ -52,13 +52,16 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             username = jwtService.extractUsername(jwt);
         } catch (ExpiredJwtException e) {
-            logger.error("JWT Token has expired");
+            logger.error("JWT Token has expired", e);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
 
-        if (username != null && !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+        if (username != null && (
+                SecurityContextHolder.getContext().getAuthentication() == null || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated())
+        ) {
             UserDetails userDetails = personDetailsService.loadUserByUsername(username);
+            logger.info("User: " + userDetails.getUsername());
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
@@ -70,6 +73,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                logger.info("Authentication set: " + authToken.getPrincipal().toString());
             }
         }
 
