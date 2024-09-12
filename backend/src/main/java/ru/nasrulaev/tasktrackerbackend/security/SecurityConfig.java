@@ -43,7 +43,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(CsrfConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors ->
+                        cors.
+                                configurationSource(corsConfigurationSource())
+                )
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(
@@ -63,15 +66,15 @@ public class SecurityConfig {
                                 .logoutUrl("/api/auth/logout")
                 )
                 .userDetailsService(personDetailsService)
-                .sessionManagement(httpSecuritySessionManagementConfigurer ->
-                        httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(
-                        httpSecurityExceptionHandlingConfigurer ->
-                                httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
-                                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-                                )
+                        exceptionHandling ->
+                                exceptionHandling.authenticationEntryPoint(
+                                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
         ;
 
