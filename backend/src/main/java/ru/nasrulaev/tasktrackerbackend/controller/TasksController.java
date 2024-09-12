@@ -42,15 +42,16 @@ public class TasksController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDTO createTask(@RequestBody @Valid CreateTaskRequest createRequest) {
-         Task newTask = tasksService.save(
-                modelMapper.map(
-                        createRequest,
+    public TaskDTO createTask(@AuthenticationPrincipal PersonDetails personDetails,
+                              @RequestBody @Valid CreateTaskRequest createRequest) {
+        Task createdTask = tasksService.save(
+                modelMapper.map(createRequest,
                         Task.class
-                )
+                ),
+                personDetails.getUser()
         );
 
-        return convertTaskToDTO(newTask);
+        return convertTaskToDTO(createdTask);
     }
 
     @PutMapping("/{id}")

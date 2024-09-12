@@ -46,6 +46,12 @@ public class TasksService {
     }
 
     @Transactional
+    public Task save(Task task, User user) {
+        task.setOwner(user);
+        return tasksRepository.save(task);
+    }
+
+    @Transactional
     public void update(long id, Task updatedTask) {
         findOne(id);
         updatedTask.setId(id);
