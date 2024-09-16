@@ -60,10 +60,6 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 )
-                .logout(logout ->
-                        logout
-                                .logoutUrl("/api/auth/logout")
-                )
                 .userDetailsService(personDetailsService)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

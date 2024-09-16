@@ -5,7 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.nasrulaev.tasktrackerbackend.dto.AuthenticationRequest;
 import ru.nasrulaev.tasktrackerbackend.dto.AuthenticationResponse;
@@ -29,17 +28,21 @@ public class AuthController {
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse register(@Valid @RequestBody AuthenticationRequest authenticationRequest, BindingResult bindingResult) {
-        return authenticationService.signUp(
-                convertDTOtoUser(authenticationRequest)
+    public AuthenticationResponse register(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+        return new AuthenticationResponse(
+                authenticationService.signUp(
+                        convertDTOtoUser(authenticationRequest)
+                )
         );
     }
 
     @PostMapping("/auth/login")
     @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest, BindingResult bindingResult) {
-        return authenticationService.signIn(
-                convertDTOtoUser(authenticationRequest)
+    public AuthenticationResponse authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+        return new AuthenticationResponse(
+                authenticationService.signIn(
+                        convertDTOtoUser(authenticationRequest)
+                )
         );
     }
 
