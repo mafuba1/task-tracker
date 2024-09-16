@@ -237,7 +237,7 @@ $(document).ready(function() {
             url: `${taskApiUrl}/${taskId}/${isDone ? 'mark' : 'unmark'}`,
             type: 'PATCH',
             success: function () {
-                const task = $('#task-${taskId}')
+                const task = $(`#task-${taskId}`)
                 task.find('.status').html(`<strong>Status:</strong> ${statusText}`);
                 task.find('button.btn-success').toggle(!isDone);
                 task.find('button.btn-warning').toggle(isDone);
@@ -258,14 +258,23 @@ $(document).ready(function() {
         updateTaskStatus(taskId, false);
     };
 
-    function editTask(taskId, task) {
-        // Заполняем форму текущими данными задачи
-        $('#editTaskHeader').val(task.header);
-        $('#editTaskDescription').val(task.description);
-        $('#editTaskDeadline').val(task.deadline_timestamp ? new Date(task.deadline_timestamp).toISOString().slice(0, 16) : '');
+    function editTask(taskId) {
+        $.ajax({
+            url: `${taskApiUrl}/${taskId}`,
+            type: 'GET',
+            success: function (task) {
+                // Заполняем форму последними данными
+                $('#editTaskHeader').val(task.header);
+                $('#editTaskDescription').val(task.description);
+                $('#editTaskDeadline').val(task.deadline_timestamp ? new Date(task.deadline_timestamp).toISOString().slice(0, 16) : '');
 
-        // Показываем модальное окно
-        $('#editTaskModal').modal('show');
+                // Показываем модальное окно
+                $('#editTaskModal').modal('show');
+            },
+            error: function (error) {
+                console.error('Error fetching task:', error);
+            }
+        });
 
         // Обрабатываем отправку формы
         $('#editTaskForm').off('submit').on('submit', function (event) {
@@ -285,7 +294,7 @@ $(document).ready(function() {
                 contentType: 'application/json',
                 data: JSON.stringify(updatedTask),
                 success: function (response) {
-                    const task = $('#task-${taskId}')
+                    const task = $(`#task-${taskId}`)
                     // Обновляем задачу в UI
                     task.find('h5').text(response.header);
                     task.find('p:eq(0)').text(response.description || 'No description');

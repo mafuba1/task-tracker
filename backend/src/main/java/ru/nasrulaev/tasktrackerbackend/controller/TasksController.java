@@ -41,6 +41,15 @@ public class TasksController {
         return new TaskList(tasks);
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TaskDTO findOne(@AuthenticationPrincipal PersonDetails personDetails,
+                           @PathVariable(name = "id") long taskId) {
+        return convertTaskToDTO(
+                tasksService.findOne(taskId, personDetails.getUser())
+        );
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO createTask(@AuthenticationPrincipal PersonDetails personDetails,
