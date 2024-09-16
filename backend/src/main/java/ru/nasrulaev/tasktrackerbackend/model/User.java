@@ -10,6 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import ru.nasrulaev.tasktrackerbackend.security.Password;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Users")
@@ -90,5 +91,18 @@ public class User {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(this.id, user.id);
     }
 }
