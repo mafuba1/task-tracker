@@ -31,6 +31,15 @@ public class RestExceptionHandler {
         );
     }
 
+    @ExceptionHandler(TaskNotAccessibleException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO taskNotAccessible(TaskNotAccessibleException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
     @ExceptionHandler(EmailTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO emailTaken(EmailTakenException e) {

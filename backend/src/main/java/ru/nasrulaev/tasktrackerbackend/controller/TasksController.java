@@ -75,21 +75,24 @@ public class TasksController {
 
     @PatchMapping("/{id}/mark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markTaskDone(@PathVariable(name ="id") long taskId) {
-        tasksService.markDone(taskId);
+    public void markTaskDone(@PathVariable(name ="id") long taskId,
+                             @AuthenticationPrincipal PersonDetails personDetails) {
+        tasksService.markDone(taskId, personDetails.getUser());
     }
 
     @PatchMapping("/{id}/unmark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unmarkTaskDone(@PathVariable(name = "id") long taskId) {
-        tasksService.unmarkDone(taskId);
+    public void unmarkTaskDone(@PathVariable(name = "id") long taskId,
+                               @AuthenticationPrincipal PersonDetails personDetails) {
+        tasksService.unmarkDone(taskId, personDetails.getUser());
     }
 
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable(name = "id") long taskId) {
-        tasksService.deleteById(taskId);
+    public void deleteTask(@PathVariable(name = "id") long taskId,
+                           @AuthenticationPrincipal PersonDetails personDetails) {
+        tasksService.deleteById(taskId, personDetails.getUser());
     }
 
     private Task convertDTOtoTask(TaskDTO taskDTO) {
