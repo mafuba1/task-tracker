@@ -75,6 +75,10 @@ public class TasksService {
     public void markDone(long id, User user) {
         Task taskToBeDone = findOne(id, user);
 
+        if (taskToBeDone.getDone_timestamp() != null) {
+            return;
+        }
+
         taskToBeDone.setDone_timestamp(
                 new Timestamp(
                         System.currentTimeMillis()
@@ -86,6 +90,11 @@ public class TasksService {
     @Transactional
     public void unmarkDone(long id, User user) {
         Task taskToUnmark = findOne(id, user);
+
+        if (taskToUnmark.getDone_timestamp() == null) {
+            return;
+        }
+
         taskToUnmark.setDone_timestamp(null);
         tasksRepository.save(taskToUnmark);
     }
