@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nasrulaev.tasktrackerbackend.exception.TaskNotFoundException;
+import ru.nasrulaev.tasktrackerbackend.exception.UnauthorizedException;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.repository.TasksRepository;
@@ -52,10 +53,15 @@ public class TasksService {
     }
 
     @Transactional
-    public void update(long id, Task updatedTask) {
-        findOne(id);
-        updatedTask.setId(id);
-        tasksRepository.save(updatedTask);
+    public Task update(long id, Task updatedTask, User user) {
+        Task existingTask = findOne(id);
+        if (!existingTask.getOwner().equals(user)) {
+            throw new UnauthorizedException("User is not the owner of this task.");
+        }
+        existingTask.setHeader(updatedTask.getHeader());
+        existingTask.setDescription(updatedTask.getDescription());
+        existingTask.setDeadline_timestamp(updatedTask.getDeadline_timestamp());
+        return tasksRepository.save(existingTask);
     }
 
     @Transactional

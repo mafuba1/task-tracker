@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.nasrulaev.tasktrackerbackend.dto.CreateTaskRequest;
 import ru.nasrulaev.tasktrackerbackend.dto.TaskDTO;
 import ru.nasrulaev.tasktrackerbackend.dto.TaskList;
+import ru.nasrulaev.tasktrackerbackend.dto.UpdateTaskRequest;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.security.PersonDetails;
 import ru.nasrulaev.tasktrackerbackend.service.TasksService;
@@ -45,7 +46,8 @@ public class TasksController {
     public TaskDTO createTask(@AuthenticationPrincipal PersonDetails personDetails,
                               @RequestBody @Valid CreateTaskRequest createRequest) {
         Task createdTask = tasksService.save(
-                modelMapper.map(createRequest,
+                modelMapper.map(
+                        createRequest,
                         Task.class
                 ),
                 personDetails.getUser()
@@ -54,14 +56,21 @@ public class TasksController {
         return convertTaskToDTO(createdTask);
     }
 
-    @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateTask(@PathVariable(name = "id") long taskId,
-                           @RequestBody @Valid TaskDTO updatedTask) {
-        tasksService.update(
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TaskDTO updateTask(@PathVariable(name = "id") long taskId,
+                              @AuthenticationPrincipal PersonDetails personDetails,
+                              @RequestBody @Valid UpdateTaskRequest updatedTask) {
+        Task editedTask = tasksService.update(
                 taskId,
-                convertDTOtoTask(updatedTask)
+                modelMapper.map(
+                        updatedTask,
+                        Task.class
+                ),
+                personDetails.getUser()
         );
+
+        return convertTaskToDTO(editedTask);
     }
 
     @PatchMapping("/{id}/mark")

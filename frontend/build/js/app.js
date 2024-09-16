@@ -12,24 +12,32 @@ $(document).ready(function() {
         }
     });
 
+    function displayAuthorized(email) {
+        if (email) {
+            $('#auth-buttons').hide();
+            $('#welcome-message').show();
+            $('#user-email').text(email);
+            $('#task-manager').show();
+        } else {
+            $('#auth-buttons').show();
+            $('#welcome-message').hide();
+            $('#task-manager').hide();
+        }
+    }
+
     $.ajax({
         method: 'GET',
         url: '/api/user',
         success: function(response) {
             // Если сервер подтверждает авторизацию, отображаем интерфейс для авторизованного пользователя
-            $('#auth-buttons').hide();
-            $('#welcome-message').show();
-            $('#user-email').text(response.email);
-            $('#task-manager').show();
+            displayAuthorized(response.email)
             fetchTasks();
         },
         error: function(xhr) {
             // Если сервер возвращает ошибку, считаем, что пользователь не авторизован
             if (xhr.status === 401) {
                 localStorage.removeItem('jwtToken');
-                $('#auth-buttons').show();
-                $('#welcome-message').hide();
-                $('#task-manager').hide();
+                displayAuthorized(false)
             } else {
                 console.error('Ошибка при проверке аутентификации:', xhr.responseText);
             }
@@ -79,9 +87,8 @@ $(document).ready(function() {
                     console.log('Токен:', response.token);
                     localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
                     $('#authModal').modal('hide');
-                    $('#auth-buttons').hide();
-                    $('#task-manager').show();
-                    $('#user-info').html(`Добро пожаловать, ${email}`);
+                    displayAuthorized(email)
+                    fetchTasks();
                 } else {
                     $('#auth-error').text(response.error).show();
                     console.warn('Токен не найден:', response.error);
@@ -95,15 +102,13 @@ $(document).ready(function() {
 
     // Обработка выхода
     $('#logout-btn').click(function() {
+        displayAuthorized(false)
         localStorage.removeItem('jwtToken');
         console.log('Выход из сессии');
         $.ajax({
             type: 'POST',
             url: '/api/auth/logout'
         });
-        $('#task-manager').hide();
-        $('#auth-buttons').show();
-        $('#user-info').html('');
     });
 
     const taskApiUrl = '/api/tasks';
@@ -117,7 +122,7 @@ $(document).ready(function() {
                 displayTasks(response.tasks);
             },
             error: function (error) {
-                console.error('Error fetching tasks:', error);
+                handleError('Error fetching tasks:', error);
             }
         });
     }
@@ -134,12 +139,16 @@ $(document).ready(function() {
     $('#createTaskForm').submit(function (event) {
         event.preventDefault();
 
+        const submitButton = $('#createTaskForm button[type="submit"]');
+        submitButton.prop('disabled', true);
+
         const taskHeader = $('#taskHeader').val();
         const taskDescription = $('#taskDescription').val();
         const taskDeadline = $('#taskDeadline').val();
 
         if (taskHeader === '') {
             alert('Task header is required');
+            submitButton.prop('disabled', false);
             return;
         }
 
@@ -159,11 +168,12 @@ $(document).ready(function() {
                 $('#taskDescription').val('');
                 $('#taskDeadline').val('');
 
-                // Добавляем созданную задачу в UI
                 addTaskToUI(response);
+                submitButton.prop('disabled', false);
             },
             error: function (error) {
-                console.error('Error creating task:', error);
+                handleError('Error creating task', error);
+                submitButton.prop('disabled', false);
             }
         });
     });
@@ -174,51 +184,124 @@ $(document).ready(function() {
         const deadline = task.deadline_timestamp ? new Date(task.deadline_timestamp).toLocaleString() : 'No deadline';
         const done = task.done_timestamp ? `Done at: ${new Date(task.done_timestamp).toLocaleString()}` : 'Not done yet';
 
-        const taskItem = `
+        const taskItem = $(`
             <li class="list-group-item d-flex justify-content-between align-items-center" id="task-${task.id}">
                 <div>
                     <h5>${task.header}</h5>
                     <p>${task.description || 'No description'}</p>
                     <p><strong>Deadline:</strong> ${deadline}</p>
-                    <p><strong>Status:</strong> ${done}</p>
+                    <p class="status"><strong>Status:</strong> ${done}</p>
                 </div>
                 <div>
-                    <button class="btn btn-success btn-sm mr-2" onclick="markTaskDone(${task.id})">Mark Done</button>
-                    <button class="btn btn-warning btn-sm mr-2" onclick="unmarkTaskDone(${task.id})">Unmark</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteTask(${task.id})">Delete</button>
+                    <button class="btn btn-success btn-sm mr-2"">Mark Done</button>
+                    <button class="btn btn-warning btn-sm mr-2">Unmark</button>
+                    <button class="btn btn-info btn-sm mr-2">Edit</button>
+                    <button class="btn btn-danger btn-sm"">Delete</button>
                 </div>
             </li>
-        `;
+        `);
+
+        const markButton = taskItem.find('button.btn-success');
+        const unmarkButton = taskItem.find('button.btn-warning');
+        const editButton = taskItem.find('button.btn-info');
+        const deleteButton = taskItem.find('button.btn-danger');
+
+        // Управляем видимостью кнопок
+        if (task.done_timestamp) {
+            markButton.hide();
+            unmarkButton.show();
+        } else {
+            markButton.show();
+            unmarkButton.hide();
+        }
+
+        // Добавляем обработчики событий
+        markButton.click(() => markTaskDone(task.id));
+        unmarkButton.click(() => unmarkTaskDone(task.id));
+        editButton.click(() => editTask(task.id, task)); // При нажатии "Edit" открываем форму редактирования
+        deleteButton.click(() => deleteTask(task.id));
+
         taskList.append(taskItem);
     }
 
-    // Mark task as done
-    window.markTaskDone = function (taskId) {
+    function handleError(message = 'An error occurred', error) {
+        console.error(message, error);
+        // TODO Добавить отображение ошибки в UI для пользователя
+    }
+
+
+    function updateTaskStatus(taskId, isDone) {
+        const statusText = isDone ? `Done at: ${new Date().toLocaleString()}` : 'Not done yet';
+
         $.ajax({
-            url: `${taskApiUrl}/${taskId}/mark`,
+            url: `${taskApiUrl}/${taskId}/${isDone ? 'mark' : 'unmark'}`,
             type: 'PATCH',
             success: function () {
-                $(`#task-${taskId} .status`).text('Done');
+                const task = $('#task-${taskId}')
+                task.find('.status').html(`<strong>Status:</strong> ${statusText}`);
+                task.find('button.btn-success').toggle(!isDone);
+                task.find('button.btn-warning').toggle(isDone);
             },
             error: function (error) {
-                console.error('Error marking task as done:', error);
+                handleError(isDone ? 'Error marking task as done' : 'Error unmarking task', error);
             }
         });
+    }
+
+// Использование
+    window.markTaskDone = function (taskId) {
+        updateTaskStatus(taskId, true);
     };
 
     // Unmark task as done
     window.unmarkTaskDone = function (taskId) {
-        $.ajax({
-            url: `${taskApiUrl}/${taskId}/unmark`,
-            type: 'PATCH',
-            success: function () {
-                $(`#task-${taskId} .status`).text('Not done yet');
-            },
-            error: function (error) {
-                console.error('Error unmarking task:', error);
-            }
-        });
+        updateTaskStatus(taskId, false);
     };
+
+    function editTask(taskId, task) {
+        // Заполняем форму текущими данными задачи
+        $('#editTaskHeader').val(task.header);
+        $('#editTaskDescription').val(task.description);
+        $('#editTaskDeadline').val(task.deadline_timestamp ? new Date(task.deadline_timestamp).toISOString().slice(0, 16) : '');
+
+        // Показываем модальное окно
+        $('#editTaskModal').modal('show');
+
+        // Обрабатываем отправку формы
+        $('#editTaskForm').off('submit').on('submit', function (event) {
+            event.preventDefault();
+
+            const deadline = $('#editTaskDeadline').val()
+
+            const updatedTask = {
+                header: $('#editTaskHeader').val(),
+                description: $('#editTaskDescription').val(),
+                deadline_timestamp: deadline ? new Date(deadline).toISOString() : null
+            };
+
+            $.ajax({
+                url: `${taskApiUrl}/${taskId}`,
+                type: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedTask),
+                success: function (response) {
+                    const task = $('#task-${taskId}')
+                    // Обновляем задачу в UI
+                    task.find('h5').text(response.header);
+                    task.find('p:eq(0)').text(response.description || 'No description');
+                    task.find('p:eq(1)').html(`<strong>Deadline:</strong> ${response.deadline_timestamp ? new Date(response.deadline_timestamp).toLocaleString() : 'No deadline'}`);
+
+                    // Закрываем модальное окно
+                    $('#editTaskModal').modal('hide');
+                },
+                error: function (error) {
+                    handleError('Error updating task:', error);
+                }
+            });
+        });
+    }
+
+
 
     // Delete task
     window.deleteTask = function (taskId) {
@@ -229,7 +312,7 @@ $(document).ready(function() {
                 $(`#task-${taskId}`).remove(); // Удаляем задачу из UI
             },
             error: function (error) {
-                console.error('Error deleting task:', error);
+                handleError('Error deleting task:', error);
             }
         });
     };

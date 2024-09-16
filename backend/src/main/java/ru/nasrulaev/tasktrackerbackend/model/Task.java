@@ -2,11 +2,9 @@ package ru.nasrulaev.tasktrackerbackend.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Table(name = "Tasks")
@@ -24,7 +22,6 @@ public class Task {
     @Column
     private String description;
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
@@ -71,7 +68,7 @@ public class Task {
         this.owner = owner;
     }
 
-    public Date getDeadline_timestamp() {
+    public Timestamp getDeadline_timestamp() {
         return deadline_timestamp;
     }
 
@@ -79,7 +76,7 @@ public class Task {
         this.deadline_timestamp = deadline_timestamp;
     }
 
-    public Date getDone_timestamp() {
+    public Timestamp getDone_timestamp() {
         return done_timestamp;
     }
 
