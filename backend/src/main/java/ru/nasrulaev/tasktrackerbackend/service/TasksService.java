@@ -10,7 +10,6 @@ import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.repository.TasksRepository;
 
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -42,11 +41,7 @@ public class TasksService {
     }
 
     public List<Task> findTasksByOwner(User owner) {
-        return tasksRepository
-                .findTasksByOwner(owner)
-                .orElse(
-                        Collections.emptyList()
-                );
+        return tasksRepository.findTasksByOwner(owner);
     }
 
     @Transactional
