@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ru.nasrulaev.tasktrackerbackend.kafka.KafkaService;
+import ru.nasrulaev.tasktrackerbackend.kafka.email.RegistrationEmailContext;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.security.PersonDetails;
 
@@ -17,16 +19,21 @@ public class AuthenticationService {
     private final UsersService usersService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final KafkaService kafkaService;
 
     @Autowired
-    public AuthenticationService(UsersService usersService, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthenticationService(UsersService usersService, JwtService jwtService, AuthenticationManager authenticationManager, KafkaService kafkaService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.kafkaService = kafkaService;
     }
 
     public String signUp(User user) {
         usersService.save(user);
+        kafkaService.sendMessage(
+                new RegistrationEmailContext(user.getEmail())
+        );
         return createToken(new PersonDetails(user));
     }
 
