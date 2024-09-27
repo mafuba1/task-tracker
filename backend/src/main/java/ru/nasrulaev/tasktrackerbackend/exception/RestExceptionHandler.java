@@ -1,7 +1,8 @@
 package ru.nasrulaev.tasktrackerbackend.exception;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -12,6 +13,8 @@ import java.sql.Timestamp;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -58,11 +61,39 @@ public class RestExceptionHandler {
         );
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorDTO authError(AuthenticationException e) {
+    @ExceptionHandler(ConfirmationTokenNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorDTO confirmationTokenNotFound(ConfirmationTokenNotFoundException e) {
         return new ErrorDTO(
                 e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(ConfirmationTokenExpiredException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO confirmationTokenExpired(ConfirmationTokenExpiredException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(UserAlreadyConfirmed.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO userAlreadyConfirmed(UserAlreadyConfirmed e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDTO handleGeneralException(Exception e) {
+        logger.error("Error: ", e);
+        return new ErrorDTO(
+                "An unexpected error occurred.",
                 new Timestamp(System.currentTimeMillis())
         );
     }

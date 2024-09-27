@@ -39,6 +39,10 @@ public class User {
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<Task> tasks;
 
+    @Column
+    @ColumnDefault("false")
+    private boolean enabled;
+
     public User() {
     }
 
@@ -91,6 +95,14 @@ public class User {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

@@ -1,5 +1,28 @@
 $(document).ready(function() {
 
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token")
+
+    if (token) {
+        $.ajax({
+            method: 'POST',
+            url: 'api/confirm',
+            data: {"token": token},
+            success: function(response) {
+                if (response.token) {
+                    console.log('Токен:', response.token);
+                    localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
+                } else {
+                    $('#auth-error').text(response.error).show();
+                    console.warn('Токен не найден:', response.error);
+                }
+            },
+            error: function(error) {
+                console.warn(error.message);
+            }
+        })
+    }
+
     $.ajaxSetup({
         beforeSend: function(xhr) {
             const token = localStorage.getItem('jwtToken');
@@ -105,10 +128,6 @@ $(document).ready(function() {
         displayAuthorized(false)
         localStorage.removeItem('jwtToken');
         console.log('Выход из сессии');
-        $.ajax({
-            type: 'POST',
-            url: '/api/auth/logout'
-        });
     });
 
     const taskApiUrl = '/api/tasks';
@@ -117,7 +136,7 @@ $(document).ready(function() {
     function fetchTasks() {
         $.ajax({
             url: taskApiUrl,
-            type: 'GET',
+            method: 'GET',
             success: function (response) {
                 displayTasks(response.tasks);
             },
@@ -139,7 +158,7 @@ $(document).ready(function() {
     $('#createTaskForm').submit(function (event) {
         event.preventDefault();
 
-        const submitButton = $('#createTaskForm button[type="submit"]');
+        const submitButton = $('#createTaskForm button[method="submit"]');
         submitButton.prop('disabled', true);
 
         const taskHeader = $('#taskHeader').val();
@@ -160,7 +179,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: taskApiUrl,
-            type: 'POST',
+            method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(newTask),
             success: function (response) {
@@ -235,7 +254,7 @@ $(document).ready(function() {
 
         $.ajax({
             url: `${taskApiUrl}/${taskId}/${isDone ? 'mark' : 'unmark'}`,
-            type: 'PATCH',
+            method: 'PATCH',
             success: function () {
                 const task = $(`#task-${taskId}`)
                 task.find('.status').html(`<strong>Status:</strong> ${statusText}`);
@@ -261,7 +280,7 @@ $(document).ready(function() {
     function editTask(taskId) {
         $.ajax({
             url: `${taskApiUrl}/${taskId}`,
-            type: 'GET',
+            method: 'GET',
             success: function (task) {
                 // Заполняем форму последними данными
                 $('#editTaskHeader').val(task.header);
@@ -290,7 +309,7 @@ $(document).ready(function() {
 
             $.ajax({
                 url: `${taskApiUrl}/${taskId}`,
-                type: 'PATCH',
+                method: 'PATCH',
                 contentType: 'application/json',
                 data: JSON.stringify(updatedTask),
                 success: function (response) {
@@ -316,7 +335,7 @@ $(document).ready(function() {
     window.deleteTask = function (taskId) {
         $.ajax({
             url: `${taskApiUrl}/${taskId}`,
-            type: 'DELETE',
+            method: 'DELETE',
             success: function () {
                 $(`#task-${taskId}`).remove(); // Удаляем задачу из UI
             },

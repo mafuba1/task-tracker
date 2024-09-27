@@ -10,6 +10,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import ru.nasrulaev.email_sender.model.Email;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 @Service
@@ -24,7 +25,7 @@ public class EmailService {
         this.templateEngine = templateEngine;
     }
 
-    public void sendEmail(Email email) throws MessagingException {
+    public void sendEmail(Email email) throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
@@ -38,7 +39,7 @@ public class EmailService {
 
         mimeMessageHelper.setTo(email.getTo());
         mimeMessageHelper.setSubject(email.getSubject());
-        mimeMessageHelper.setFrom(email.getFrom());
+        mimeMessageHelper.setFrom(email.getFrom() + "@mafuba.ru", "Трекер задач");
         mimeMessageHelper.setText(emailContent, true);
         emailSender.send(message);
     }

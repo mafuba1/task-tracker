@@ -54,6 +54,10 @@ public class SecurityConfig {
                                         "/api/auth/**"
                                 ).permitAll()
                                 .requestMatchers(
+                                        HttpMethod.PATCH,
+                                        "/api/confirm"
+                                ).permitAll()
+                                .requestMatchers(
                                         HttpMethod.GET,
                                         "/api/user"
                                 ).permitAll()

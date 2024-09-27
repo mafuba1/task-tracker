@@ -1,6 +1,8 @@
 package ru.nasrulaev.tasktrackerbackend.exception;
 
-public class TaskNotFoundException extends RuntimeException {
+import jakarta.persistence.EntityNotFoundException;
+
+public class TaskNotFoundException extends EntityNotFoundException {
     public TaskNotFoundException(String msg) {
         super(msg);
     }
