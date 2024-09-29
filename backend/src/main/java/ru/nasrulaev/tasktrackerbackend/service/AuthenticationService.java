@@ -4,13 +4,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.nasrulaev.tasktrackerbackend.kafka.KafkaService;
-import ru.nasrulaev.tasktrackerbackend.kafka.email.RegistrationEmailContext;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 
 @Service
@@ -19,35 +19,24 @@ public class AuthenticationService {
     private final UsersService usersService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final KafkaService kafkaService;
     private final ConfirmationTokensService confirmationTokensService;
 
     @Autowired
-    public AuthenticationService(UsersService usersService, JwtService jwtService, AuthenticationManager authenticationManager, KafkaService kafkaService, ConfirmationTokensService confirmationTokensService) {
+    public AuthenticationService(UsersService usersService, JwtService jwtService, AuthenticationManager authenticationManager, ConfirmationTokensService confirmationTokensService) {
         this.usersService = usersService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
-        this.kafkaService = kafkaService;
         this.confirmationTokensService = confirmationTokensService;
     }
 
     @Transactional
     public void signUp(User user) {
-        usersService.save(user);
-
-        String token = confirmationTokensService
-                .generateAndSaveToken(user)
-                .getToken();
-
-        kafkaService.sendMessage(
-                new RegistrationEmailContext(
-                        user.getEmail(),
-                        token
-                )
-        );
+        user = usersService.save(user);
+        confirmationTokensService.sendToken(user);
     }
 
     public String signIn(User user) {
+
         try {
 
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -57,9 +46,15 @@ public class AuthenticationService {
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             return createToken(userDetails);
-        } catch (Exception authException) {
-            logger.error("Failure in login", authException);
-            throw authException;
+        } catch (BadCredentialsException badCredentialsException) {
+            logger.error("Bad credentials: ", badCredentialsException);
+            throw badCredentialsException;
+        } catch (DisabledException disabledException) {
+            logger.error("User disabled: ", disabledException);
+            throw disabledException;
+        } catch (Exception e) {
+            logger.error("Failure in login: ", e);
+            throw e;
         }
 
     }

@@ -92,6 +92,29 @@
     </div>
 </div>
 
+<div class="modal" id="verificationModal" tabindex="-1" aria-labelledby="verificationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verificationModalLabel">Окончание регистрации</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <p>На указанную почту было отправлено письмо со ссылкой для подтверждения регистрации.</p>
+            <p>Не забудьте проверить спам. Если письма нет, вы можете запросить его снова.</p>
+            <div class="modal-body">
+                <form id="verification-form">
+                    <div class="mb-3">
+                        <input type="email" class="form-control visually-hidden" id="verification-email" required>
+                    </div>
+                    <div id="verification-error" class="alert alert-danger" style="display: none;"></div>
+                    <button id="verification-resend" type="button" class="btn btn-primary">Отправить еще раз</button>
+                    <p id="verification-timer-display" style="color: red;"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal" id="editTaskModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

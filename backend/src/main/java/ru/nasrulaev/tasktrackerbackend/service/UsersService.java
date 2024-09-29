@@ -23,10 +23,10 @@ public class UsersService {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void save(User user) {
+    public User save(User user) {
         if (usersRepository.existsByEmail(user.getEmail())) throw new EmailTakenException("Email is taken");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        usersRepository.save(user);
+        return usersRepository.save(user);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

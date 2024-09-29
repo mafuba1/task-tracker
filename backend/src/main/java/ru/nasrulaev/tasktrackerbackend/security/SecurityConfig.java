@@ -51,11 +51,8 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         HttpMethod.POST,
                                         "/api/user",
-                                        "/api/auth/**"
-                                ).permitAll()
-                                .requestMatchers(
-                                        HttpMethod.PATCH,
-                                        "/api/confirm"
+                                        "/api/auth/**",
+                                        "/api/tokens/**"
                                 ).permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET,

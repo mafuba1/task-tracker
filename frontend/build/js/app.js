@@ -6,8 +6,9 @@ $(document).ready(function() {
     if (token) {
         $.ajax({
             method: 'POST',
-            url: 'api/confirm',
-            data: {"token": token},
+            url: 'api/tokens/confirm',
+            data: JSON.stringify({token}),
+            contentType: 'application/json',
             success: function(response) {
                 if (response.token) {
                     console.log('Токен:', response.token);
@@ -97,31 +98,102 @@ $(document).ready(function() {
             return;
         }
 
-        const url = isRegistration ? '/api/user' : '/api/auth/login';
+        if (isRegistration) {
+            $.ajax({
+                method: 'POST',
+                url: 'api/user',
+                data: JSON.stringify({email, password}),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function () {
+                    $('#authModal').modal('hide')
+                    $('#verificationModal').modal('show')
+                    $('#verification-email').val(email)
+                    startTimer(300);
+                },
+                error: function (xhr) {
+                    // TODO something here
+                }
+            });
+        } else {
+            $.ajax({
+                method: 'POST',
+                url: 'api/auth/login',
+                data: JSON.stringify({email, password}),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.token) {
+                        console.log('Токен:', response.token);
+                        localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
+                        $('#authModal').modal('hide');
+                        displayAuthorized(email)
+                        fetchTasks();
+                    } else {
+                        $('#auth-error').text(response.error).show();
+                        console.warn('Токен не найден:', response.error);
+                    }
+                },
+                error: function (error) {
+                    if (error.status === 403) {
+                        $('#authModal').modal('hide')
+                        $('#verificationModal').modal('show')
+                        $('#verification-email').val(email)
+                        startTimer(300);
+                    }
+                    if (error.status === 401) {
+                        handleError("An error occurred", error)
+                    }
+                }
+            });
+
+        }
+    });
+
+        // if (response.token) {
+        //     console.log('Токен:', response.token);
+        //     localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
+        //     $('#authModal').modal('hide');
+        //     displayAuthorized(email)
+        //     fetchTasks();
+        // $('#auth-error').text(response.error).show();
+        // console.warn('Токен не найден:', response.error);
+
+    $('#verification-resend').click(function () {
+        const email = $('#verification-email').val()
 
         $.ajax({
             method: 'POST',
-            url: url,
-            data: JSON.stringify({ email, password }),
-            dataType: 'json',
-            contentType: 'application/json',
-            success: function(response) {
-                if (response.token) {
-                    console.log('Токен:', response.token);
-                    localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
-                    $('#authModal').modal('hide');
-                    displayAuthorized(email)
-                    fetchTasks();
-                } else {
-                    $('#auth-error').text(response.error).show();
-                    console.warn('Токен не найден:', response.error);
-                }
-            },
-            error: function() {
-                $('#auth-error').text('Ошибка сервера. Попробуйте позже.').show();
+            url: 'api/tokens/resend',
+            data: JSON.stringify({email}),
+            contentType: 'application/json'
+        })
+
+        startTimer(300);
+        $('#verification-resend').prop("disabled", true);
+    })
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = $('#verification-timer-display');
+
+        const countdown = setInterval(function () {
+            minutes = Math.floor(timer / 60);
+            seconds = timer % 60;
+
+            // Добавляем ведущий ноль к секундам, если число однозначное
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            // Обновляем отображение таймера на экране
+            display.text(`You can resend email in ${minutes}:${seconds}`);
+
+            if (--timer < 0) {
+                clearInterval(countdown);
+                display.text('You can now resend the email!');
+                $('#verification-resend').prop('disabled', false); // Разблокировка кнопки
             }
-        });
-    });
+        }, 1000); // Каждую секунду обновляем таймер
+    }
 
     // Обработка выхода
     $('#logout-btn').click(function() {

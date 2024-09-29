@@ -11,24 +11,20 @@ import ru.nasrulaev.tasktrackerbackend.dto.AuthenticationResponse;
 import ru.nasrulaev.tasktrackerbackend.dto.GetUserInfoResponse;
 import ru.nasrulaev.tasktrackerbackend.dto.RegistrationResponse;
 import ru.nasrulaev.tasktrackerbackend.exception.UnauthorizedException;
-import ru.nasrulaev.tasktrackerbackend.exception.UserAlreadyConfirmed;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.security.PersonDetails;
 import ru.nasrulaev.tasktrackerbackend.service.AuthenticationService;
-import ru.nasrulaev.tasktrackerbackend.service.ConfirmationTokensService;
 
 @RestController
 @RequestMapping("/api")
 public class AuthController {
     private final AuthenticationService authenticationService;
     private final ModelMapper modelMapper;
-    private final ConfirmationTokensService confirmationTokensService;
 
     @Autowired
-    public AuthController(AuthenticationService authenticationService, ModelMapper modelMapper, ConfirmationTokensService confirmationTokensService) {
+    public AuthController(AuthenticationService authenticationService, ModelMapper modelMapper) {
         this.authenticationService = authenticationService;
         this.modelMapper = modelMapper;
-        this.confirmationTokensService = confirmationTokensService;
     }
 
     @PostMapping("/user")
@@ -50,14 +46,6 @@ public class AuthController {
                 authenticationService.signIn(
                         convertDTOtoUser(authenticationRequest)
                 )
-        );
-    }
-
-    @PostMapping("/confirm")
-    @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse confirmToken(@RequestParam(name = "token") String token) throws UserAlreadyConfirmed {
-        return new AuthenticationResponse(
-                confirmationTokensService.confirm(token)
         );
     }
 

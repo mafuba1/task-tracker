@@ -3,6 +3,8 @@ package ru.nasrulaev.tasktrackerbackend.exception;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -82,6 +84,33 @@ public class RestExceptionHandler {
     @ExceptionHandler(UserAlreadyConfirmed.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO userAlreadyConfirmed(UserAlreadyConfirmed e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO badCredentialsException() {
+        return new ErrorDTO(
+                "Bad credentials",
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO disabledException(DisabledException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO illegalStateException(IllegalStateException e) {
         return new ErrorDTO(
                 e.getMessage(),
                 new Timestamp(System.currentTimeMillis())
