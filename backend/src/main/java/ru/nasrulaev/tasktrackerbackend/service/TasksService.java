@@ -81,6 +81,7 @@ public class TasksService {
                         System.currentTimeMillis()
                 )
         );
+        taskToBeDone.setDone(true);
         tasksRepository.save(taskToBeDone);
     }
 
