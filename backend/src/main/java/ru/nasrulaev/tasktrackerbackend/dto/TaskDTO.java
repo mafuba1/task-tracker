@@ -17,18 +17,12 @@ public class TaskDTO {
 
     private Timestamp deadline_timestamp;
 
+    private boolean done;
+
     @PastOrPresent
     private Timestamp done_timestamp;
 
     public TaskDTO() {
-    }
-
-    public TaskDTO(long id, String header, String description, Timestamp deadline_timestamp, Timestamp done_timestamp) {
-        this.id = id;
-        this.header = header;
-        this.description = description;
-        this.deadline_timestamp = deadline_timestamp;
-        this.done_timestamp = done_timestamp;
     }
 
     public long getId() {
@@ -55,13 +49,20 @@ public class TaskDTO {
         this.description = description;
     }
 
-
     public Date getDeadline_timestamp() {
         return deadline_timestamp;
     }
 
     public void setDeadline_timestamp(Timestamp deadline_timestamp) {
         this.deadline_timestamp = deadline_timestamp;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public Date getDone_timestamp() {

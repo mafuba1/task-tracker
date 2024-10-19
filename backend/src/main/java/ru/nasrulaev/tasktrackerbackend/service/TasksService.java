@@ -3,7 +3,9 @@ package ru.nasrulaev.tasktrackerbackend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.nasrulaev.tasktrackerbackend.exception.TaskAlreadyDone;
 import ru.nasrulaev.tasktrackerbackend.exception.TaskNotAccessibleException;
+import ru.nasrulaev.tasktrackerbackend.exception.TaskNotDoneException;
 import ru.nasrulaev.tasktrackerbackend.exception.TaskNotFoundException;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.model.User;
@@ -70,8 +72,8 @@ public class TasksService {
     public void markDone(long id, User user) {
         Task taskToBeDone = findOne(id, user);
 
-        if (taskToBeDone.getDone_timestamp() != null) {
-            return;
+        if (taskToBeDone.isDone()) {
+            throw new TaskAlreadyDone("Task " + taskToBeDone.getHeader() + "is already done");
         }
 
         taskToBeDone.setDone_timestamp(
@@ -86,11 +88,12 @@ public class TasksService {
     public void unmarkDone(long id, User user) {
         Task taskToUnmark = findOne(id, user);
 
-        if (taskToUnmark.getDone_timestamp() == null) {
-            return;
+        if (!taskToUnmark.isDone()) {
+            throw new TaskNotDoneException("Task " + taskToUnmark.getHeader() + "is not done");
         }
 
         taskToUnmark.setDone_timestamp(null);
+        taskToUnmark.setDone(false);
         tasksRepository.save(taskToUnmark);
     }
 

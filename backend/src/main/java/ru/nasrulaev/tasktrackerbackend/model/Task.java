@@ -3,6 +3,7 @@ package ru.nasrulaev.tasktrackerbackend.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PastOrPresent;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.sql.Timestamp;
 
@@ -25,6 +26,10 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
+
+    @Column
+    @ColumnDefault("false")
+    private boolean done;
 
     @Column
     private Timestamp deadline_timestamp;
@@ -74,6 +79,14 @@ public class Task {
 
     public void setDeadline_timestamp(Timestamp deadline_timestamp) {
         this.deadline_timestamp = deadline_timestamp;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
     }
 
     public Timestamp getDone_timestamp() {

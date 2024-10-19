@@ -1,0 +1,2 @@
+ALTER TABLE tasks
+    ADD done BOOLEAN DEFAULT FALSE;

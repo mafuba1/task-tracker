@@ -45,6 +45,24 @@ public class RestExceptionHandler {
         );
     }
 
+    @ExceptionHandler(TaskAlreadyDone.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO taskAlreadyDone(TaskAlreadyDone e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(TaskNotDoneException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO taskNotDoneException(TaskNotDoneException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
     @ExceptionHandler(EmailTakenException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO emailTaken(EmailTakenException e) {
