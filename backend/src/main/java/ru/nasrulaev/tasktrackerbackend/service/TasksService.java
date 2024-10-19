@@ -73,7 +73,7 @@ public class TasksService {
         Task taskToBeDone = findOne(id, user);
 
         if (taskToBeDone.isDone()) {
-            throw new TaskAlreadyDone("Task " + taskToBeDone.getHeader() + "is already done");
+            throw new TaskAlreadyDone("Task " + taskToBeDone.getHeader() + " is already done");
         }
 
         taskToBeDone.setDone_timestamp(
@@ -90,7 +90,7 @@ public class TasksService {
         Task taskToUnmark = findOne(id, user);
 
         if (!taskToUnmark.isDone()) {
-            throw new TaskNotDoneException("Task " + taskToUnmark.getHeader() + "is not done");
+            throw new TaskNotDoneException("Task " + taskToUnmark.getHeader() + " is not done");
         }
 
         taskToUnmark.setDone_timestamp(null);
