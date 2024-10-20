@@ -34,7 +34,7 @@ public class User {
 
     @NotNull
     @ColumnDefault("false")
-    private boolean isSubscribed;
+    private boolean subscribed;
 
     @OneToMany(mappedBy = "owner", orphanRemoval = true)
     private List<Task> tasks;
@@ -82,11 +82,11 @@ public class User {
     }
 
     public boolean isSubscribed() {
-        return isSubscribed;
+        return subscribed;
     }
 
     public void setSubscribed(boolean subscribed) {
-        isSubscribed = subscribed;
+        this.subscribed = subscribed;
     }
 
     public List<Task> getTasks() {

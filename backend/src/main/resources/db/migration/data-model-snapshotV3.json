@@ -1,0 +1,539 @@
+{
+  "snapshot": {
+    "created": "2024-10-20T13:50:14.291",
+    "database": {
+      "productVersion": "2024.2.3",
+      "shortName": "intellijPsiClass",
+      "majorVersion": "0",
+      "minorVersion": "0",
+      "user": "mafuba",
+      "productName": "IDEA Data Grid Snapshot",
+      "url": "jpab?generationContext=8b16eb5c-58fe-4a25-a67f-99a8f16d7a53"
+    },
+    "metadata": {
+      "generationContext": {
+        "dbmsType": "postgresql"
+      }
+    },
+    "objects": {
+      "liquibase.structure.core.Catalog": [
+        {
+          "catalog": {
+            "default": true,
+            "name": "JPA_BUDDY",
+            "snapshotId": "c121199"
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.Column": [
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "confirmed_at",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121229",
+            "type": {
+              "typeName": "DATETIME"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "created_at",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121227",
+            "type": {
+              "typeName": "DATETIME"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "deadline_timestamp",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121208",
+            "type": {
+              "typeName": "DATETIME"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "description",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121205",
+            "type": {
+              "columnSize": "255!{java.lang.Integer}",
+              "typeName": "VARCHAR"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "defaultValue": false,
+            "name": "done",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121207",
+            "type": {
+              "typeName": "BOOLEAN"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "done_timestamp",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121209",
+            "type": {
+              "typeName": "DATETIME"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "email",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121214",
+            "type": {
+              "columnSize": "320!{java.lang.Integer}",
+              "typeName": "VARCHAR"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "defaultValue": false,
+            "name": "enabled",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121218",
+            "type": {
+              "typeName": "BOOLEAN"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "expires_at",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121228",
+            "type": {
+              "typeName": "DATETIME"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "header",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121204",
+            "type": {
+              "columnSize": "255!{java.lang.Integer}",
+              "typeName": "VARCHAR"
+            }
+          }
+        },
+        {
+          "column": {
+            "autoIncrementInformation": {
+              "incrementBy": "1!{java.math.BigInteger}",
+              "startWith": "1!{java.math.BigInteger}"
+            },
+            "certainDataType": false,
+            "name": "id",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121225",
+            "type": {
+              "typeName": "BIGINT"
+            }
+          }
+        },
+        {
+          "column": {
+            "autoIncrementInformation": {
+              "incrementBy": "1!{java.math.BigInteger}",
+              "startWith": "1!{java.math.BigInteger}"
+            },
+            "certainDataType": false,
+            "name": "id",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121203",
+            "type": {
+              "typeName": "BIGINT"
+            }
+          }
+        },
+        {
+          "column": {
+            "autoIncrementInformation": {
+              "incrementBy": "1!{java.math.BigInteger}",
+              "startWith": "1!{java.math.BigInteger}"
+            },
+            "certainDataType": false,
+            "name": "id",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121211",
+            "type": {
+              "typeName": "BIGINT"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "owner_id",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121201",
+            "snapshotId": "c121206",
+            "type": {
+              "typeName": "BIGINT"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "password",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121216",
+            "type": {
+              "columnSize": "255!{java.lang.Integer}",
+              "typeName": "VARCHAR"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "defaultValue": false,
+            "name": "subscribed",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121217",
+            "type": {
+              "typeName": "BOOLEAN"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "token",
+            "nullable": true,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121226",
+            "type": {
+              "columnSize": "255!{java.lang.Integer}",
+              "typeName": "VARCHAR"
+            }
+          }
+        },
+        {
+          "column": {
+            "certainDataType": false,
+            "name": "user_id",
+            "nullable": false,
+            "relation": "liquibase.structure.core.Table#c121221",
+            "snapshotId": "c121223",
+            "type": {
+              "typeName": "BIGINT"
+            }
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.ForeignKey": [
+        {
+          "foreignKey": {
+            "foreignKeyColumns": [
+              "liquibase.structure.core.Column#c121223"
+            ]
+            ,
+            "foreignKeyTable": "liquibase.structure.core.Table#c121221",
+            "name": "FK_CONFIRMATION_TOKENS_ON_USER",
+            "primaryKeyColumns": [
+              "liquibase.structure.core.Column#c121211"
+            ]
+            ,
+            "primaryKeyTable": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121230"
+          }
+        },
+        {
+          "foreignKey": {
+            "foreignKeyColumns": [
+              "liquibase.structure.core.Column#c121206"
+            ]
+            ,
+            "foreignKeyTable": "liquibase.structure.core.Table#c121201",
+            "name": "FK_TASKS_ON_OWNER",
+            "primaryKeyColumns": [
+              "liquibase.structure.core.Column#c121211"
+            ]
+            ,
+            "primaryKeyTable": "liquibase.structure.core.Table#c121212",
+            "snapshotId": "c121210"
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.Index": [
+        {
+          "index": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id"
+                }
+              }
+            ]
+            ,
+            "name": "IX_pk_confirmation_tokens",
+            "snapshotId": "c121224",
+            "table": "liquibase.structure.core.Table#c121221",
+            "unique": true
+          }
+        },
+        {
+          "index": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id"
+                }
+              }
+            ]
+            ,
+            "name": "IX_pk_tasks",
+            "snapshotId": "c121202",
+            "table": "liquibase.structure.core.Table#c121201",
+            "unique": true
+          }
+        },
+        {
+          "index": {
+            "columns": [
+              {
+                "column": {
+                  "name": "id"
+                }
+              }
+            ]
+            ,
+            "name": "IX_pk_users",
+            "snapshotId": "c121215",
+            "table": "liquibase.structure.core.Table#c121212",
+            "unique": true
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.PrimaryKey": [
+        {
+          "primaryKey": {
+            "backingIndex": "liquibase.structure.core.Index#c121224",
+            "columns": [
+              "liquibase.structure.core.Column#c121225"
+            ]
+            ,
+            "name": "pk_confirmation_tokens",
+            "snapshotId": "c121231",
+            "table": "liquibase.structure.core.Table#c121221"
+          }
+        },
+        {
+          "primaryKey": {
+            "backingIndex": "liquibase.structure.core.Index#c121202",
+            "columns": [
+              "liquibase.structure.core.Column#c121203"
+            ]
+            ,
+            "name": "pk_tasks",
+            "snapshotId": "c121220",
+            "table": "liquibase.structure.core.Table#c121201"
+          }
+        },
+        {
+          "primaryKey": {
+            "backingIndex": "liquibase.structure.core.Index#c121215",
+            "columns": [
+              "liquibase.structure.core.Column#c121211"
+            ]
+            ,
+            "name": "pk_users",
+            "snapshotId": "c121219",
+            "table": "liquibase.structure.core.Table#c121212"
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.Schema": [
+        {
+          "schema": {
+            "catalog": "liquibase.structure.core.Catalog#c121199",
+            "default": true,
+            "snapshotId": "c121200"
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "columns": [
+              "liquibase.structure.core.Column#c121225",
+              "liquibase.structure.core.Column#c121226",
+              "liquibase.structure.core.Column#c121223",
+              "liquibase.structure.core.Column#c121227",
+              "liquibase.structure.core.Column#c121228",
+              "liquibase.structure.core.Column#c121229"
+            ]
+            ,
+            "indexes": [
+              "liquibase.structure.core.Index#c121224"
+            ]
+            ,
+            "name": "confirmation_tokens",
+            "outgoingForeignKeys": [
+              "liquibase.structure.core.ForeignKey#c121230"
+            ]
+            ,
+            "primaryKey": "liquibase.structure.core.PrimaryKey#c121231",
+            "schema": "liquibase.structure.core.Schema#c121200",
+            "snapshotId": "c121221",
+            "uniqueConstraints": [
+              "liquibase.structure.core.UniqueConstraint#c121222"
+            ]
+            
+          }
+        },
+        {
+          "table": {
+            "columns": [
+              "liquibase.structure.core.Column#c121203",
+              "liquibase.structure.core.Column#c121204",
+              "liquibase.structure.core.Column#c121205",
+              "liquibase.structure.core.Column#c121206",
+              "liquibase.structure.core.Column#c121207",
+              "liquibase.structure.core.Column#c121208",
+              "liquibase.structure.core.Column#c121209"
+            ]
+            ,
+            "indexes": [
+              "liquibase.structure.core.Index#c121202"
+            ]
+            ,
+            "name": "tasks",
+            "outgoingForeignKeys": [
+              "liquibase.structure.core.ForeignKey#c121210"
+            ]
+            ,
+            "primaryKey": "liquibase.structure.core.PrimaryKey#c121220",
+            "schema": "liquibase.structure.core.Schema#c121200",
+            "snapshotId": "c121201"
+          }
+        },
+        {
+          "table": {
+            "columns": [
+              "liquibase.structure.core.Column#c121211",
+              "liquibase.structure.core.Column#c121214",
+              "liquibase.structure.core.Column#c121216",
+              "liquibase.structure.core.Column#c121217",
+              "liquibase.structure.core.Column#c121218"
+            ]
+            ,
+            "indexes": [
+              "liquibase.structure.core.Index#c121215"
+            ]
+            ,
+            "name": "users",
+            "primaryKey": "liquibase.structure.core.PrimaryKey#c121219",
+            "schema": "liquibase.structure.core.Schema#c121200",
+            "snapshotId": "c121212",
+            "uniqueConstraints": [
+              "liquibase.structure.core.UniqueConstraint#c121213"
+            ]
+            
+          }
+        }
+      ]
+      ,
+      "liquibase.structure.core.UniqueConstraint": [
+        {
+          "uniqueConstraint": {
+            "clustered": false,
+            "columns": [
+              "liquibase.structure.core.Column#c121223"
+            ]
+            ,
+            "deferrable": false,
+            "disabled": false,
+            "initiallyDeferred": false,
+            "name": "uc_confirmation_tokens_user",
+            "snapshotId": "c121222",
+            "table": "liquibase.structure.core.Table#c121221",
+            "validate": true
+          }
+        },
+        {
+          "uniqueConstraint": {
+            "clustered": false,
+            "columns": [
+              "liquibase.structure.core.Column#c121214"
+            ]
+            ,
+            "deferrable": false,
+            "disabled": false,
+            "initiallyDeferred": false,
+            "name": "uc_users_email",
+            "snapshotId": "c121213",
+            "table": "liquibase.structure.core.Table#c121212",
+            "validate": true
+          }
+        }
+      ]
+      
+    },
+    "snapshotControl": {
+      "snapshotControl": {
+        "includedType": [
+          "liquibase.structure.core.Catalog",
+          "liquibase.structure.core.Column",
+          "liquibase.structure.core.ForeignKey",
+          "liquibase.structure.core.Index",
+          "liquibase.structure.core.PrimaryKey",
+          "liquibase.structure.core.Schema",
+          "liquibase.structure.core.Sequence",
+          "liquibase.structure.core.Table",
+          "liquibase.structure.core.UniqueConstraint",
+          "liquibase.structure.core.View"
+        ]
+        
+      }
+    }
+  }
+}
