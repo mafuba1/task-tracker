@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nasrulaev.tasktrackerbackend.exception.EmailTakenException;
 import ru.nasrulaev.tasktrackerbackend.exception.UserAlreadyConfirmed;
+import ru.nasrulaev.tasktrackerbackend.exception.UserAlreadySubscribed;
+import ru.nasrulaev.tasktrackerbackend.exception.UserNotSubscribed;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.repository.UsersRepository;
 
@@ -34,6 +36,26 @@ public class UsersService {
         if (user.isEnabled()) throw new UserAlreadyConfirmed("User already confirmed");
 
         user.setEnabled(true);
+        usersRepository.save(user);
+    }
+
+    @Transactional
+    public void subscribe(User user) {
+        if (user.isSubscribed()) {
+            throw new UserAlreadySubscribed("User already subscribed");
+        }
+
+        user.setSubscribed(true);
+        usersRepository.save(user);
+    }
+
+    @Transactional
+    public void unsubscribe(User user) {
+        if (!user.isSubscribed()) {
+            throw new UserNotSubscribed("User not subscribed");
+        }
+
+        user.setSubscribed(false);
         usersRepository.save(user);
     }
 }

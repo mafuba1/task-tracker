@@ -4,15 +4,11 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ru.nasrulaev.tasktrackerbackend.dto.AuthenticationRequest;
 import ru.nasrulaev.tasktrackerbackend.dto.AuthenticationResponse;
-import ru.nasrulaev.tasktrackerbackend.dto.GetUserInfoResponse;
 import ru.nasrulaev.tasktrackerbackend.dto.RegistrationResponse;
-import ru.nasrulaev.tasktrackerbackend.exception.UnauthorizedException;
 import ru.nasrulaev.tasktrackerbackend.model.User;
-import ru.nasrulaev.tasktrackerbackend.security.PersonDetails;
 import ru.nasrulaev.tasktrackerbackend.service.AuthenticationService;
 
 @RestController
@@ -47,15 +43,6 @@ public class AuthController {
                         convertDTOtoUser(authenticationRequest)
                 )
         );
-    }
-
-    @GetMapping(value = "/user", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public GetUserInfoResponse getUserInfo(@AuthenticationPrincipal PersonDetails personDetails) throws UnauthorizedException {
-        if (personDetails == null) throw new UnauthorizedException("Unauthorized");
-
-        User user = personDetails.getUser();
-        return modelMapper.map(user, GetUserInfoResponse.class);
     }
 
     private User convertDTOtoUser(AuthenticationRequest authenticationRequest) {

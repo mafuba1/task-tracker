@@ -3,6 +3,7 @@ package ru.nasrulaev.scheduler.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.nasrulaev.scheduler.dto.StatsEmailContext;
 import ru.nasrulaev.scheduler.dto.TaskInfo;
 import ru.nasrulaev.scheduler.dto.TaskInfoList;
@@ -27,6 +28,7 @@ public class StatsService {
         this.kafkaService = kafkaService;
     }
 
+    @Transactional(readOnly = true)
     public void iterateUsersAndSendStatsEmail() {
         List<User> subscribedUsers = usersRepository.findSubscribedUsers();
         subscribedUsers.forEach(this::sendStatsEmail);
@@ -69,7 +71,6 @@ public class StatsService {
         );
 
         kafkaService.sendMessage(statsEmailContext);
-
     }
 
 

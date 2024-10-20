@@ -108,6 +108,24 @@ public class RestExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UserAlreadySubscribed.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO userAlreadySubscribed(UserAlreadySubscribed e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(UserNotSubscribed.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO userNotSubscribed(UserNotSubscribed e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO badCredentialsException() {
