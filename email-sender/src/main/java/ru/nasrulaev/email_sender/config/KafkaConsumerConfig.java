@@ -15,6 +15,7 @@ import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper;
 import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import ru.nasrulaev.email_sender.model.RegistrationEmailContext;
+import ru.nasrulaev.email_sender.model.StatsEmailContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,7 @@ public class KafkaConsumerConfig {
         typeMapper.addTrustedPackages("*");
         Map<String, Class<?>> mappings = new HashMap<>();
         mappings.put("registration", RegistrationEmailContext.class);
+        mappings.put("stats", StatsEmailContext.class);
         typeMapper.setIdClassMapping(mappings);
         converter.setTypeMapper(typeMapper);
         return converter;

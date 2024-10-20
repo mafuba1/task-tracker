@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Отчет по задачам</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<p>Уважаемый(ая) пользователь,</p>
+
+<!-- Если есть несделанные задачи -->
+<div th:if="${tasksNotDoneCount > 0}">
+    <p>У вас осталось <span th:text="${tasksNotDoneCount}"></span> несделанных задач(и):</p>
+    <ul>
+        <li th:each="task : ${taskNotDone}" th:text="${task.header}"></li>
+    </ul>
+</div>
+
+<!-- Если есть выполненные задачи за сегодня -->
+<div th:if="${tasksDoneTodayCount > 0}">
+    <p>За сегодня вы выполнили <span th:text="${tasksDoneTodayCount}"></span> задач(и):</p>
+    <ul>
+        <li th:each="task : ${taskDoneToday}" th:text="${task.header}"></li>
+    </ul>
+</div>
+
+<p>С уважением,<br>
+    mafuba</p>
+
+</body>
+</html>

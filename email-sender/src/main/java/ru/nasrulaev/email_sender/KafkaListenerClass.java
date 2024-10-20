@@ -2,14 +2,18 @@ package ru.nasrulaev.email_sender;
 
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import ru.nasrulaev.email_sender.model.Email;
 import ru.nasrulaev.email_sender.model.RegistrationEmailContext;
+import ru.nasrulaev.email_sender.model.StatsEmailContext;
+import ru.nasrulaev.email_sender.model.TaskInfo;
 import ru.nasrulaev.email_sender.service.EmailService;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -33,6 +37,29 @@ public class KafkaListenerClass {
         email.setContext(context);
         email.setTemplateLocation("registration");
         email.setFrom("noreply");
+        emailService.sendEmail(email);
+    }
+
+    @Value("${tasks_not_done_limit}")
+    private int tasksNotDoneLimitForEmail;
+
+    @KafkaHandler
+    public void handleEmail(StatsEmailContext statsEmail) throws MessagingException, UnsupportedEncodingException {
+        Email email = new Email();
+        List<TaskInfo> tasksDoneToday = statsEmail.getTaskDoneToday().getTasksInfo();
+        List<TaskInfo> tasksNotDone = statsEmail.getTasksNotDone().getTasksInfo();
+        Map<String, Object> context = Map.of(
+                "tasksDoneTodayCount", tasksDoneToday.size(),
+                "taskDoneToday", tasksDoneToday,
+                "tasksNotDoneCount", tasksNotDone.size(),
+                "tasksNotDone", tasksNotDone.stream().limit(tasksNotDoneLimitForEmail).toList()
+        );
+
+        email.setTo(statsEmail.getTo());
+        email.setSubject("Статистика за прошедщий день");
+        email.setContext(context);
+        email.setTemplateLocation("stats");
+        email.setFrom("stats");
         emailService.sendEmail(email);
     }
 

@@ -1,13 +1,8 @@
-package ru.nasrulaev.tasktrackerbackend.model;
+package ru.nasrulaev.scheduler.model;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
-import ru.nasrulaev.tasktrackerbackend.security.Password;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,17 +17,11 @@ public class User {
     private long id;
 
     @Column(unique = true)
-    @NotBlank(message = "Email is mandatory")
-    @Email
-    @Size(max = 320)
     private String email;
 
     @Column
-    @NotBlank(message = "Email is mandatory")
-    @Password
     private String password;
 
-    @NotNull
     @Column
     @ColumnDefault("false")
     private boolean subscribed;
