@@ -1,13 +1,15 @@
 package ru.nasrulaev.email_sender.model;
 
+import java.util.List;
+
 public class StatsEmailContext {
     private String to;
-    private TaskInfoList taskDoneToday;
-    private TaskInfoList tasksNotDone;
+    private List<TaskInfo> taskDoneToday;
+    private List<TaskInfo> tasksNotDone;
 
     public StatsEmailContext() {}
 
-    public StatsEmailContext(String to, TaskInfoList taskDoneToday, TaskInfoList tasksNotDone) {
+    public StatsEmailContext(String to, List<TaskInfo> taskDoneToday, List<TaskInfo> tasksNotDone) {
         this.to = to;
         this.taskDoneToday = taskDoneToday;
         this.tasksNotDone = tasksNotDone;
@@ -21,19 +23,19 @@ public class StatsEmailContext {
         this.to = to;
     }
 
-    public TaskInfoList getTaskDoneToday() {
+    public List<TaskInfo> getTaskDoneToday() {
         return taskDoneToday;
     }
 
-    public void setTaskDoneToday(TaskInfoList taskDoneToday) {
+    public void setTaskDoneToday(List<TaskInfo> taskDoneToday) {
         this.taskDoneToday = taskDoneToday;
     }
 
-    public TaskInfoList getTasksNotDone() {
+    public List<TaskInfo> getTasksNotDone() {
         return tasksNotDone;
     }
 
-    public void setTasksNotDone(TaskInfoList tasksNotDone) {
+    public void setTasksNotDone(List<TaskInfo> tasksNotDone) {
         this.tasksNotDone = tasksNotDone;
     }
 }

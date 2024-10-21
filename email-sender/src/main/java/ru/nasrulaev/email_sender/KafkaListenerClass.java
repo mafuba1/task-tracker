@@ -46,8 +46,8 @@ public class KafkaListenerClass {
     @KafkaHandler
     public void handleEmail(StatsEmailContext statsEmail) throws MessagingException, UnsupportedEncodingException {
         Email email = new Email();
-        List<TaskInfo> tasksDoneToday = statsEmail.getTaskDoneToday().getTasksInfo();
-        List<TaskInfo> tasksNotDone = statsEmail.getTasksNotDone().getTasksInfo();
+        List<TaskInfo> tasksDoneToday = statsEmail.getTaskDoneToday();
+        List<TaskInfo> tasksNotDone = statsEmail.getTasksNotDone();
         Map<String, Object> context = Map.of(
                 "tasksDoneTodayCount", tasksDoneToday.size(),
                 "taskDoneToday", tasksDoneToday,

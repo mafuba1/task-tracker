@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.nasrulaev.scheduler.dto.StatsEmailContext;
 import ru.nasrulaev.scheduler.dto.TaskInfo;
-import ru.nasrulaev.scheduler.dto.TaskInfoList;
 import ru.nasrulaev.scheduler.model.Task;
 import ru.nasrulaev.scheduler.model.User;
 import ru.nasrulaev.scheduler.repository.UsersRepository;
@@ -45,32 +44,29 @@ public class StatsService {
     private void sendStatsEmail(User user) {
         List<Task> tasks = user.getTasks();
 
-        TaskInfoList tasksDoneToday = new TaskInfoList(
-                tasks.stream()
-                        .filter(Task::isDone)
-                        .filter(task ->
-                                task.getDone_timestamp().after(YESTERDAY)
-                        )
-                        .map(this::convertToTaskInfo)
-                        .toList()
-        );
+         List<TaskInfo> tasksDoneToday = tasks.stream()
+                 .filter(Task::isDone)
+                 .filter(task ->
+                         task.getDone_timestamp().after(YESTERDAY))
+                 .map(this::convertToTaskInfo)
+                 .toList();
 
-        TaskInfoList taskNotDone = new TaskInfoList(
-                tasks.stream()
-                        .filter(task ->
-                                !task.isDone()
-                        )
-                        .map(this::convertToTaskInfo)
-                        .toList()
-        );
+        List<TaskInfo> taskNotDone = tasks.stream()
+                .filter(task ->
+                        !task.isDone())
+                .map(this::convertToTaskInfo)
+                .toList();
 
-        StatsEmailContext statsEmailContext = new StatsEmailContext(
-                user.getEmail(),
-                tasksDoneToday,
-                taskNotDone
-        );
+        if (!tasksDoneToday.isEmpty() || !taskNotDone.isEmpty()) {
+            kafkaService.sendMessage(
+                    new StatsEmailContext(
+                            user.getEmail(),
+                            tasksDoneToday,
+                            taskNotDone
+                    )
+            );
+        }
 
-        kafkaService.sendMessage(statsEmailContext);
     }
 
 
