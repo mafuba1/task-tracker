@@ -50,7 +50,7 @@ public class KafkaListenerClass {
         List<TaskInfo> tasksNotDone = statsEmail.getTasksNotDone();
         Map<String, Object> context = Map.of(
                 "tasksDoneTodayCount", tasksDoneToday.size(),
-                "taskDoneToday", tasksDoneToday,
+                "tasksDoneToday", tasksDoneToday,
                 "tasksNotDoneCount", tasksNotDone.size(),
                 "tasksNotDone", tasksNotDone.stream().limit(tasksNotDoneLimitForEmail).toList()
         );

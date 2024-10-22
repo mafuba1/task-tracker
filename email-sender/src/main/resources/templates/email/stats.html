@@ -12,7 +12,7 @@
 <div th:if="${tasksNotDoneCount > 0}">
     <p>У вас осталось <span th:text="${tasksNotDoneCount}"></span> несделанных задач(и):</p>
     <ul>
-        <li th:each="task : ${taskNotDone}" th:text="${task.header}"></li>
+        <li th:each="task : ${tasksNotDone}" th:text="${task.header}"></li>
     </ul>
 </div>
 
@@ -20,7 +20,7 @@
 <div th:if="${tasksDoneTodayCount > 0}">
     <p>За сегодня вы выполнили <span th:text="${tasksDoneTodayCount}"></span> задач(и):</p>
     <ul>
-        <li th:each="task : ${taskDoneToday}" th:text="${task.header}"></li>
+        <li th:each="task : ${tasksDoneToday}" th:text="${task.header}"></li>
     </ul>
 </div>
 
