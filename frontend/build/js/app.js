@@ -165,8 +165,7 @@ $(document).ready(function() {
                         console.log('Токен:', response.token);
                         localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
                         $('#authModal').modal('hide');
-                        displayAuthorized(email, response.subscribed)
-                        fetchTasks();
+                        retrieveUserInfo();
                     } else {
                         $('#auth-error').text(response.error).show();
                         console.warn('Токен не найден:', response.error);
