@@ -4,11 +4,17 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class TaskInfo implements Serializable {
-    private final String header;
+    private String header;
+
+    public TaskInfo() {}
 
     public TaskInfo(String header) {
         this.header = header;
     }
+
+    public void setHeader(String header) {
+        this.header = header;
+    };
 
     public String getHeader() {
         return header;
