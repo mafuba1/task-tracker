@@ -13,6 +13,7 @@ $(document).ready(function() {
                 if (response.token) {
                     console.log('Токен:', response.token);
                     localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
+                    retrieveUserInfo();
                 } else {
                     $('#auth-error').text(response.error).show();
                     console.warn('Токен не найден:', response.error);
@@ -36,12 +37,13 @@ $(document).ready(function() {
         }
     });
 
-    function displayAuthorized(email) {
-        if (email) {
+    function displayAuthorized(userInfo) {
+        if (userInfo) {
             $('#auth-buttons').hide();
             $('#welcome-message').show();
-            $('#user-email').text(email);
+            $('#user-email').text(userInfo.email);
             $('#task-manager').show();
+            showSubscribeButton(userInfo.subscribed)
         } else {
             $('#auth-buttons').show();
             $('#welcome-message').hide();
@@ -49,24 +51,60 @@ $(document).ready(function() {
         }
     }
 
-    $.ajax({
-        method: 'GET',
-        url: '/api/user',
-        success: function(response) {
-            // Если сервер подтверждает авторизацию, отображаем интерфейс для авторизованного пользователя
-            displayAuthorized(response.email)
-            fetchTasks();
-        },
-        error: function(xhr) {
-            // Если сервер возвращает ошибку, считаем, что пользователь не авторизован
-            if (xhr.status === 401) {
-                localStorage.removeItem('jwtToken');
-                displayAuthorized(false)
-            } else {
-                console.error('Ошибка при проверке аутентификации:', xhr.responseText);
-            }
+    function showSubscribeButton(subscribed) {
+        if (subscribed) {
+            $('#subscribe-btn').hide();
+            $('#unsubscribe-btn').show();
+        } else {
+            $('#subscribe-btn').show();
+            $('#unsubscribe-btn').hide();
         }
+    }
+
+    $('#subscribe-btn').click(function () {
+        updateSubscription(false)
     });
+
+    $('#unsubscribe-btn').click(function () {
+        updateSubscription(true)
+    });
+
+
+    function updateSubscription(subscribed) {
+        $.ajax({
+            url: `/api/user/${subscribed ? 'unsubscribe' : 'subscribe'}`,
+            method: 'PATCH',
+            success: function () {
+                showSubscribeButton(!subscribed);
+            },
+            error: function (error) {
+                handleError(subscribed ? 'Error subscribing user ': 'Error unsubscribing user ', error);
+            }
+        });
+    }
+
+    function retrieveUserInfo() {
+        $.ajax({
+            method: 'GET',
+            url: '/api/user',
+            success: function (response) {
+                // Если сервер подтверждает авторизацию, отображаем интерфейс для авторизованного пользователя
+                displayAuthorized(response)
+                fetchTasks();
+            },
+            error: function (xhr) {
+                // Если сервер возвращает ошибку, считаем, что пользователь не авторизован
+                if (xhr.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    displayAuthorized(false)
+                } else {
+                    console.error('Ошибка при проверке аутентификации:', xhr.responseText);
+                }
+            }
+        });
+    }
+
+    retrieveUserInfo();
 
     // Показ модального окна регистрации
     $('#register-btn').click(function() {
@@ -127,7 +165,7 @@ $(document).ready(function() {
                         console.log('Токен:', response.token);
                         localStorage.setItem('jwtToken', response.token); // Сохраняем JWT
                         $('#authModal').modal('hide');
-                        displayAuthorized(email)
+                        displayAuthorized(email, response.subscribed)
                         fetchTasks();
                     } else {
                         $('#auth-error').text(response.error).show();
@@ -273,7 +311,7 @@ $(document).ready(function() {
     function addTaskToUI(task) {
         const taskList = $('#taskList');
         const deadline = task.deadline_timestamp ? new Date(task.deadline_timestamp).toLocaleString() : 'No deadline';
-        const done = task.done_timestamp ? `Done at: ${new Date(task.done_timestamp).toLocaleString()}` : 'Not done yet';
+        const done = task.done ? `Done at: ${new Date(task.done_timestamp).toLocaleString()}` : 'Not done yet';
 
         const taskItem = $(`
             <li class="list-group-item d-flex justify-content-between align-items-center" id="task-${task.id}">
@@ -298,7 +336,7 @@ $(document).ready(function() {
         const deleteButton = taskItem.find('button.btn-danger');
 
         // Управляем видимостью кнопок
-        if (task.done_timestamp) {
+        if (task.done) {
             markButton.hide();
             unmarkButton.show();
         } else {
