@@ -3,3 +3,5 @@
 *.iws
 *.ipr
 *.iml
+/compose/.env.prod
+/compose/compose-prod.yaml
