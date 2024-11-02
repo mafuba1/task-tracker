@@ -1,6 +1,7 @@
 services:
   backend:
     build: ../backend
+    image: ${DOCKERHUB_USERNAME}/task-tracker-backend
     ports:
       - '8080:8080'
     environment:
@@ -13,12 +14,16 @@ services:
 
   frontend:
     build: ../frontend
+    image: ${DOCKERHUB_USERNAME}/task-tracker-frontend
     ports:
       - 8089:80
     restart: always
+    labels:
+      kompose.service.type: loadbalancer
 
   email-sender:
     build: ../email-sender
+    image: ${DOCKERHUB_USERNAME}/task-tracker-email-sender
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_SERVERS}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILE}
@@ -34,6 +39,7 @@ services:
 
   scheduler:
     build: ../scheduler
+    image: ${DOCKERHUB_USERNAME}/task-tracker-scheduler
     depends_on:
       - db
       - kafka
