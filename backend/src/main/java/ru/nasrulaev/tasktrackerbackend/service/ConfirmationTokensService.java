@@ -92,12 +92,12 @@ public class ConfirmationTokensService {
     }
 
     @Transactional
-    public void resend(String email) {
+    public void resend(String email) throws UserAlreadyConfirmed {
         log.info("Resend request by " + email);
         ConfirmationToken token = confirmationTokenRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ConfirmationTokenNotFoundException("Token not found"));
 
-        if (token.getUser().isEnabled()) throw new IllegalStateException("User already confirmed");
+        if (token.getUser().isEnabled()) throw new UserAlreadyConfirmed("User already confirmed");
 
         token.setToken(
                 generateToken());

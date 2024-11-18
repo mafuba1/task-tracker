@@ -1,9 +1,12 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.sql.Timestamp;
 
 public class UpdateTaskRequest {
 
+    @NotEmpty
     private String header;
 
     private String description;

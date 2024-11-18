@@ -1,6 +1,10 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class ConfirmTokenRequest {
+
+    @NotEmpty
     private String token;
 
     public ConfirmTokenRequest() {

@@ -1,5 +1,6 @@
 package ru.nasrulaev.tasktrackerbackend.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,15 @@ public class RestExceptionHandler {
     @ExceptionHandler(TaskAlreadyDone.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorDTO taskAlreadyDone(TaskAlreadyDone e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(TaskAlreadyExists.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO taskAlreadyDone(TaskAlreadyExists e) {
         return new ErrorDTO(
                 e.getMessage(),
                 new Timestamp(System.currentTimeMillis())
@@ -141,6 +151,16 @@ public class RestExceptionHandler {
         return new ErrorDTO(
                 e.getMessage(),
                 new Timestamp(System.currentTimeMillis())
+        );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDTO constraintViolationException(ConstraintViolationException e) {
+        return new ErrorDTO(
+                e.getMessage(),
+                new Timestamp(System.currentTimeMillis()
+                )
         );
     }
 

@@ -3,10 +3,7 @@ package ru.nasrulaev.tasktrackerbackend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.nasrulaev.tasktrackerbackend.exception.TaskAlreadyDone;
-import ru.nasrulaev.tasktrackerbackend.exception.TaskNotAccessibleException;
-import ru.nasrulaev.tasktrackerbackend.exception.TaskNotDoneException;
-import ru.nasrulaev.tasktrackerbackend.exception.TaskNotFoundException;
+import ru.nasrulaev.tasktrackerbackend.exception.*;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.model.User;
 import ru.nasrulaev.tasktrackerbackend.repository.TasksRepository;
@@ -53,6 +50,8 @@ public class TasksService {
 
     @Transactional
     public Task save(Task task, User user) {
+        if (tasksRepository.existsByHeaderAndOwner(task.getHeader(), user))
+            throw new TaskAlreadyExists("Task with header '" + task.getHeader() + "' already exists");
         task.setOwner(user);
         return tasksRepository.save(task);
     }

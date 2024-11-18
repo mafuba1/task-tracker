@@ -1,15 +1,17 @@
 package ru.nasrulaev.tasktrackerbackend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.nasrulaev.tasktrackerbackend.dto.CreateTaskRequest;
-import ru.nasrulaev.tasktrackerbackend.dto.TaskDTO;
-import ru.nasrulaev.tasktrackerbackend.dto.TaskList;
-import ru.nasrulaev.tasktrackerbackend.dto.UpdateTaskRequest;
+import ru.nasrulaev.tasktrackerbackend.dto.*;
 import ru.nasrulaev.tasktrackerbackend.model.Task;
 import ru.nasrulaev.tasktrackerbackend.security.PersonDetails;
 import ru.nasrulaev.tasktrackerbackend.service.TasksService;
@@ -29,6 +31,21 @@ public class TasksController {
         this.modelMapper = modelMapper;
     }
 
+    @Operation(summary = "Get user's tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found user's tasks",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskList.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+    })
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public TaskList findAll(@AuthenticationPrincipal PersonDetails personDetails) {
@@ -41,6 +58,27 @@ public class TasksController {
         return new TaskList(tasks);
     }
 
+    @Operation(summary = "Get user's task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found user's task",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+    })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TaskDTO findOne(@AuthenticationPrincipal PersonDetails personDetails,
@@ -50,6 +88,30 @@ public class TasksController {
         );
     }
 
+    @Operation(summary = "Create task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Task created",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskList.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "409", description = "Task not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Empty task header",
+                    content = @Content()
+            ),
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO createTask(@AuthenticationPrincipal PersonDetails personDetails,
@@ -65,6 +127,36 @@ public class TasksController {
         return convertTaskToDTO(createdTask);
     }
 
+    @Operation(summary = "Update task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task updated",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskList.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Task not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Empty task header",
+                    content = @Content()
+            ),
+    })
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TaskDTO updateTask(@PathVariable(name = "id") long taskId,
@@ -82,6 +174,36 @@ public class TasksController {
         return convertTaskToDTO(editedTask);
     }
 
+    @Operation(summary = "Mark task as done")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Task marked as done",
+                    content = @Content()
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Task not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "409", description = "Task already marked as done",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+    })
     @PatchMapping("/{id}/mark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markTaskDone(@PathVariable(name ="id") long taskId,
@@ -89,6 +211,39 @@ public class TasksController {
         tasksService.markDone(taskId, personDetails.getUser());
     }
 
+    @Operation(summary = "Mark task as not done")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Task marked as not done",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskList.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Task not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "409", description = "Task already marked as not done",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+    })
     @PatchMapping("/{id}/unmark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unmarkTaskDone(@PathVariable(name = "id") long taskId,
@@ -97,6 +252,36 @@ public class TasksController {
     }
 
 
+    @Operation(summary = "Delete task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Found user's tasks",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TaskList.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "404", description = "Task not found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Task id not provided",
+                    content = @Content()
+            ),
+    })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTask(@PathVariable(name = "id") long taskId,

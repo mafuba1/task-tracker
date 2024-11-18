@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface TasksRepository extends JpaRepository<Task, Long> {
     List<Task> findTasksByOwner(User owner);
+
+    boolean existsByHeaderAndOwner(String header, User owner);
 }

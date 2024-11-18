@@ -6,7 +6,11 @@ import org.hibernate.annotations.ColumnDefault;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Tasks")
+@Table(name = "Tasks",
+        uniqueConstraints = {
+            @UniqueConstraint(name = "unique_user_task", columnNames = {"header", "owner_id"})
+        }
+)
 public class Task {
 
     @Column
