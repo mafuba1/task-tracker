@@ -1,12 +1,12 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
 public class CreateTaskRequest {
-    @NotEmpty(message = "Header must not be empty")
+    @NotBlank(message = "Header must not be empty")
     private String header;
 
     private String description;

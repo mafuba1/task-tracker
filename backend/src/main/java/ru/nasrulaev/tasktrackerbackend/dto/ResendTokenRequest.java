@@ -1,10 +1,10 @@
 package ru.nasrulaev.tasktrackerbackend.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 
 public class ResendTokenRequest {
 
-    @NotEmpty
+    @NotBlank
     private String email;
 
     public ResendTokenRequest() {
