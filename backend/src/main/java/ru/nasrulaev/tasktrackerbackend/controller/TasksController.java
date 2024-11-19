@@ -1,7 +1,9 @@
 package ru.nasrulaev.tasktrackerbackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -82,7 +84,7 @@ public class TasksController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TaskDTO findOne(@AuthenticationPrincipal PersonDetails personDetails,
-                           @PathVariable(name = "id") long taskId) {
+                           @Parameter(description = "id of the task") @PathVariable(name = "id") long taskId) {
         return convertTaskToDTO(
                 tasksService.findOne(taskId, personDetails.getUser())
         );
@@ -115,6 +117,23 @@ public class TasksController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TaskDTO createTask(@AuthenticationPrincipal PersonDetails personDetails,
+                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                      description = "Task to create",
+                                      required = true,
+                                      content = @Content(
+                                              mediaType = "application/json",
+                                              schema = @Schema(implementation = CreateTaskRequest.class),
+                                              examples = @ExampleObject(
+                                                      value = """
+                                                              {
+                                                                "header": "Make dishes",
+                                                                "description": "Make some dishes for dinner",
+                                                                "deadline_timestamp": 1732021956"
+                                                              }
+                                                              """
+                                              )
+                                      )
+                              )
                               @RequestBody @Valid CreateTaskRequest createRequest) {
         Task createdTask = tasksService.save(
                 modelMapper.map(
@@ -159,8 +178,25 @@ public class TasksController {
     })
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TaskDTO updateTask(@PathVariable(name = "id") long taskId,
+    public TaskDTO updateTask(@Parameter(description = "id of the task to be updated") @PathVariable(name = "id") long taskId,
                               @AuthenticationPrincipal PersonDetails personDetails,
+                              @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                                      description = "Updated task information",
+                                      required = true,
+                                      content = @Content(
+                                              mediaType = "application/json",
+                                              schema = @Schema(implementation = UpdateTaskRequest.class),
+                                              examples = @ExampleObject(
+                                                      value = """
+                                                              {
+                                                                "header": "Make dishes",
+                                                                "description": "Make some dishes for dinner",
+                                                                "deadline_timestamp": 1732021956"
+                                                              }
+                                                              """
+                                              )
+                                      )
+                              )
                               @RequestBody @Valid UpdateTaskRequest updatedTask) {
         Task editedTask = tasksService.update(
                 taskId,
@@ -206,7 +242,7 @@ public class TasksController {
     })
     @PatchMapping("/{id}/mark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markTaskDone(@PathVariable(name ="id") long taskId,
+    public void markTaskDone(@Parameter(description = "id of the task to be marked as done") @PathVariable(name ="id") long taskId,
                              @AuthenticationPrincipal PersonDetails personDetails) {
         tasksService.markDone(taskId, personDetails.getUser());
     }
@@ -246,7 +282,7 @@ public class TasksController {
     })
     @PatchMapping("/{id}/unmark")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unmarkTaskDone(@PathVariable(name = "id") long taskId,
+    public void unmarkTaskDone(@Parameter(description = "id of the task to be marked as not done") @PathVariable(name = "id") long taskId,
                                @AuthenticationPrincipal PersonDetails personDetails) {
         tasksService.unmarkDone(taskId, personDetails.getUser());
     }
@@ -284,7 +320,7 @@ public class TasksController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable(name = "id") long taskId,
+    public void deleteTask(@Parameter(description = "id of the task to be deleted") @PathVariable(name = "id") long taskId,
                            @AuthenticationPrincipal PersonDetails personDetails) {
         tasksService.deleteById(taskId, personDetails.getUser());
     }

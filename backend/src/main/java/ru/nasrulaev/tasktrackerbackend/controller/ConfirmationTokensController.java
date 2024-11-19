@@ -1,8 +1,8 @@
 package ru.nasrulaev.tasktrackerbackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -58,7 +58,22 @@ public class ConfirmationTokensController {
     @PostMapping("/confirm")
     @ResponseStatus(HttpStatus.OK)
     public AuthenticationResponse confirmToken(
-            @Parameter(description = "Token to approve") @RequestBody @Valid ConfirmTokenRequest request
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Token to confirm",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ConfirmTokenRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "token": "INOWwrpTIvZXVifx"
+                                            }
+                                            """
+                            )
+                    )
+            )
+            @RequestBody @Valid ConfirmTokenRequest request
     ) throws UserAlreadyConfirmed {
         return new AuthenticationResponse(
                 confirmationTokensService.confirm(
@@ -91,7 +106,20 @@ public class ConfirmationTokensController {
     @PostMapping(value = "/resend", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void resendToken(
-            @Parameter(description = "User email") @RequestBody @Valid ResendTokenRequest request
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User email",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ResendTokenRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                              "email": "example@email.com"
+                                            """
+                            )
+                    )
+            )
+            @RequestBody @Valid ResendTokenRequest request
     ) throws UserAlreadyConfirmed {
         confirmationTokensService.resend(
                 request.getEmail()

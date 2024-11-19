@@ -2,6 +2,7 @@ package ru.nasrulaev.tasktrackerbackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,7 +49,24 @@ public class AuthController {
     })
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.OK)
-    public RegistrationResponse register(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+    public RegistrationResponse register(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User to register",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AuthenticationRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "email": "example@example.com",
+                                              "password": "SomePassword123~
+                                            }
+                                            """
+                            )
+                    )
+            )
+            @Valid @RequestBody AuthenticationRequest authenticationRequest) {
         authenticationService.signUp(
                 convertDTOtoUser(authenticationRequest)
         );
@@ -82,7 +100,24 @@ public class AuthController {
     })
     @PostMapping("/auth/login")
     @ResponseStatus(HttpStatus.OK)
-    public AuthenticationResponse authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticate(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User credentials",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AuthenticationRequest.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "email": "example@example.com",
+                                              "password": "SomePassword123~
+                                            }
+                                            """
+                            )
+                    )
+            )
+            @Valid @RequestBody AuthenticationRequest authenticationRequest) {
         return new AuthenticationResponse(
                 authenticationService.signIn(
                         convertDTOtoUser(authenticationRequest)
