@@ -98,7 +98,7 @@ public class TasksController {
                             schema = @Schema(implementation = TaskList.class)
                     )
             ),
-            @ApiResponse(responseCode = "409", description = "Task not found",
+            @ApiResponse(responseCode = "409", description = "Task already exists",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class)
@@ -167,6 +167,12 @@ public class TasksController {
                     )
             ),
             @ApiResponse(responseCode = "403", description = "Task not accessible",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)
+                    )
+            ),
+            @ApiResponse(responseCode = "409", description = "Task already exists",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class)
