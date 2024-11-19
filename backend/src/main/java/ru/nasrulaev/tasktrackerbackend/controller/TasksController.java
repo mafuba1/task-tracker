@@ -125,12 +125,11 @@ public class TasksController {
                                               schema = @Schema(implementation = CreateTaskRequest.class),
                                               examples = @ExampleObject(
                                                       value = """
-                                                              {
-                                                                "header": "Make dishes",
-                                                                "description": "Make some dishes for dinner",
-                                                                "deadline_timestamp": 1732021956"
-                                                              }
-                                                              """
+                                                              { \
+                                                                "header": "Make dishes", \
+                                                                "description": "Make some dishes for dinner", \
+                                                                "deadline_timestamp": "2024-11-19T15:38:07.443Z" \
+                                                              }"""
                                               )
                                       )
                               )
@@ -194,12 +193,11 @@ public class TasksController {
                                               schema = @Schema(implementation = UpdateTaskRequest.class),
                                               examples = @ExampleObject(
                                                       value = """
-                                                              {
-                                                                "header": "Make dishes",
-                                                                "description": "Make some dishes for dinner",
-                                                                "deadline_timestamp": 1732021956"
-                                                              }
-                                                              """
+                                                              { \
+                                                                "header": "Make dishes", \
+                                                                "description": "Make some dishes for dinner", \
+                                                                "deadline_timestamp": "2024-11-19T15:38:07.443Z" \
+                                                              }"""
                                               )
                                       )
                               )

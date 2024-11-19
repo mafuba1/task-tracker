@@ -66,10 +66,9 @@ public class ConfirmationTokensController {
                             schema = @Schema(implementation = ConfirmTokenRequest.class),
                             examples = @ExampleObject(
                                     value = """
-                                            {
-                                              "token": "INOWwrpTIvZXVifx"
-                                            }
-                                            """
+                                            { \
+                                              "token": "INOWwrpTIvZXVifx" \
+                                            }"""
                             )
                     )
             )
@@ -114,8 +113,9 @@ public class ConfirmationTokensController {
                             schema = @Schema(implementation = ResendTokenRequest.class),
                             examples = @ExampleObject(
                                     value = """
-                                              "email": "example@email.com"
-                                            """
+                                            { \
+                                              "email": "example@email.com" \
+                                            }"""
                             )
                     )
             )

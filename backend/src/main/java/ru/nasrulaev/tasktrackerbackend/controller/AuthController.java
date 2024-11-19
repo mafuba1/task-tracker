@@ -58,11 +58,10 @@ public class AuthController {
                             schema = @Schema(implementation = AuthenticationRequest.class),
                             examples = @ExampleObject(
                                     value = """
-                                            {
-                                              "email": "example@example.com",
-                                              "password": "SomePassword123~
-                                            }
-                                            """
+                                            { \
+                                              "email": "example@example.com", \
+                                              "password": "SomePassword123~" \
+                                            }"""
                             )
                     )
             )
@@ -109,11 +108,10 @@ public class AuthController {
                             schema = @Schema(implementation = AuthenticationRequest.class),
                             examples = @ExampleObject(
                                     value = """
-                                            {
-                                              "email": "example@example.com",
-                                              "password": "SomePassword123~
-                                            }
-                                            """
+                                            { \
+                                              "email": "example@example.com", \
+                                              "password": "SomePassword123~" \
+                                            }"""
                             )
                     )
             )
