@@ -37,7 +37,7 @@ services:
 
   scheduler:
     build: ../scheduler
-    image: task-tracker-scheduler:stable
+    image: ${DOCKERHUB_USERNAME}/task-tracker-scheduler:stable
     depends_on:
       - db
       - kafka
