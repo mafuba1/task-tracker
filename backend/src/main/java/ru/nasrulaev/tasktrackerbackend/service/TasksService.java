@@ -61,6 +61,10 @@ public class TasksService {
         Task existingTask = findOne(id, user);
 
         existingTask.setHeader(updatedTask.getHeader());
+
+        if (tasksRepository.existsByHeaderAndOwner(updatedTask.getHeader(), user))
+            throw new TaskAlreadyExists("Task with header '" + updatedTask.getHeader() + "' already exists");
+
         existingTask.setDescription(updatedTask.getDescription());
         existingTask.setDeadline_timestamp(updatedTask.getDeadline_timestamp());
 
